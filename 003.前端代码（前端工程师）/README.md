@@ -7,11 +7,7 @@
 ```
 003.前端代码（前端工程师）/
 ├── README.md            ← 本文件
-├── frontend/            ← Stitch 原始生成产物（原样归档，不再维护）
-│   ├── dashboard/ analytics/ transactions/ settings/   四个主页面
-│   ├── _1/ _2/          登录页 / 注册页（Stitch 的原始命名）
-│   └── pastel_ledger_clean/DESIGN.md   设计系统令牌（配色的唯一事实来源）
-└── app/                 ← 工程化整理版（本次产出，日常查看用这个）
+└── app/                 ← 工程化整理版（日常查看用这个；Stitch 原始产物归档于 ../002.产品UI原型（美术设计）/UI原型/）
     ├── index.html       首页
     ├── transactions.html 明细
     ├── analytics.html   统计
@@ -59,4 +55,4 @@
 
 ## 设计规范
 
-颜色、字体、圆角、间距令牌以 `frontend/pastel_ledger_clean/DESIGN.md` 为唯一事实来源，代码中集中在 `app/assets/js/tailwind-config.js` 一处引用。**改设计令牌只改这两个文件，不要在页面内写死色值。**
+颜色、字体、圆角、间距令牌以 [002 归档的 DESIGN.md](../002.产品UI原型（美术设计）/UI原型/pastel_ledger_clean/DESIGN.md) 为唯一事实来源，代码中集中在 `app/assets/js/tailwind-config.js` 一处引用。**改设计令牌只改这两个文件，不要在页面内写死色值。**
