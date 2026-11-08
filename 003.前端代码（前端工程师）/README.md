@@ -1,0 +1,62 @@
+# 003.前端代码（前端工程师）
+
+基于 Stitch 生成的粉嫩系原型（对照 [PRD V1.0.1](../001.产品PRD（产品经理）/个人财务管理产品PRD-V1.0.1.md)）整理而成的**可相互跳转的多页静态原型**。
+
+## 目录结构
+
+```
+003.前端代码（前端工程师）/
+├── README.md            ← 本文件
+├── frontend/            ← Stitch 原始生成产物（原样归档，不再维护）
+│   ├── dashboard/ analytics/ transactions/ settings/   四个主页面
+│   ├── _1/ _2/          登录页 / 注册页（Stitch 的原始命名）
+│   └── pastel_ledger_clean/DESIGN.md   设计系统令牌（配色的唯一事实来源）
+└── app/                 ← 工程化整理版（本次产出，日常查看用这个）
+    ├── index.html       首页
+    ├── transactions.html 明细
+    ├── analytics.html   统计
+    ├── settings.html    我的
+    ├── login.html       登录（PRD 5.9，未登录时唯一可见页面）
+    ├── register.html    注册（PRD 5.9）
+    └── assets/
+        ├── css/base.css              全站基础层
+        └── js/
+            ├── tailwind-config.js    共享 Tailwind 令牌（原 6 份内联配置的唯一来源）
+            ├── auth.js               本地会话（PRD 5.9 路由规则的原型级落地）
+            ├── shell.js              页头/底部导航注入 + 导航高亮 + 头像菜单（消除 4 份重复骨架）
+            ├── toast.js              共享 Toast
+            └── pages/                各页面专属交互（dashboard/transactions/analytics/settings）
+```
+
+## 运行
+
+无构建、无依赖：直接双击 `app/index.html`（或任一页面）即可。字体与 Tailwind 走 CDN，需联网；断网时布局会退化但结构可看。
+
+## 页面地图与跳转关系
+
+| 页面 | 文件 | 可去的方向 |
+| --- | --- | --- |
+| 首页 | `index.html` | 明细（查看全部 / 记一笔 / 悬浮球）、统计（完整分析报表）、我的（头像菜单）、登录（会话门禁） |
+| 明细 | `transactions.html` | 统计 / 我的 / 首页（导航）、新增记账抽屉 |
+| 统计 | `analytics.html` | 明细（各分类行 / 查看细分账单）、我的（设置限额提醒） |
+| 我的 | `settings.html` | 登录（退出登录）、注册（重置账户后）、各弹窗 |
+| 登录 | `login.html` | 注册（立即注册）、首页（登录成功）、重置账户弹窗（忘记密码） |
+| 注册 | `register.html` | 登录（已有账号）、首页（注册成功自动登录） |
+
+## 会话门禁（PRD 5.9 的原型级演示）
+
+- 登录 / 注册成功 → 写入 `localStorage['jianji.session']` → 进入首页；
+- 主页面由 `shell.js` 调用 `auth.js` 的门禁：**无会话访问任何主页面会被重定向到 `login.html`**；
+- 「我的」页提供**退出登录**（清除会话回登录页，数据保留）与**重置账户**（PRD 5.9 的"忘记密码"补救路径，输入 `RESET` 二次确认）；
+- 每个主页面右上角**头像菜单**（点击人像图标）同样提供「我的」与「退出登录」两个入口。
+
+## 已知原型局限（与 002 实现版的边界）
+
+- **不做真实凭证校验**：登录/注册任意输入即可进入；PBKDF2 哈希、错 5 次锁 30 秒等 PRD 5.9 安全逻辑在 `002.网站开发` 实现版中落地；
+- 数据为**静态演示数据**（写死在 HTML 中），不持久化用户输入；
+- 明暗主题切换、月份切换为提示性交互（深色主题属 PRD V1.2 范围）；
+- 「记一笔」统一跳转到明细页的新增抽屉（PRD 的全局 Bottom Sheet 属实现版行为）。
+
+## 设计规范
+
+颜色、字体、圆角、间距令牌以 `frontend/pastel_ledger_clean/DESIGN.md` 为唯一事实来源，代码中集中在 `app/assets/js/tailwind-config.js` 一处引用。**改设计令牌只改这两个文件，不要在页面内写死色值。**

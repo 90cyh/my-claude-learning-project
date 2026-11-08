@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>简记 · 首页</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌸</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script src="assets/js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="assets/css/base.css">
+</head>
+<body data-page="dashboard" class="bg-plane text-text-primary min-h-screen flex flex-col font-body-md text-body-md">
+
+  <!-- 页头 / 底部导航 / 页脚由 assets/js/shell.js 注入（含会话门禁） -->
+
+  <main class="w-full pt-14 flex-1 pb-24">
+    <div class="w-full max-w-7xl mx-auto px-margin md:px-margin-desktop py-space-lg md:py-space-xl">
+      <!-- Desktop 12-col Grid / Mobile Stack -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter md:gap-gutter-desktop items-start">
+        <!-- LEFT PRIMARY COLUMN (8 Cols on Desktop) -->
+        <div class="lg:col-span-8 flex flex-col gap-space-lg md:gap-space-xl min-w-0">
+          <!-- Emotional Greeting Header -->
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-space-xs">
+            <div>
+              <div class="flex items-center gap-space-xs">
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-secondary animate-pulse"></span>
+                <h2 class="font-headline-md text-headline-md text-text-primary tracking-tight">11月5日 周四 · 晚上好 🌸</h2>
+              </div>
+              <p class="font-body-md text-body-md text-text-secondary mt-space-2xs">今天过得怎么样？来记下日常小开支吧，每一笔都是生活印记。</p>
+            </div>
+          </div>
+          <!-- Hero Financial Metric Card (#fdeef5, 16px radius, strictly ONE big metric) -->
+          <div class="w-full rounded-[16px] bg-surface-hero p-space-lg md:p-space-xl shadow-sm relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-44 h-44 rounded-full bg-surface-variant opacity-40 blur-2xl pointer-events-none"></div>
+            <div class="relative z-10 flex flex-col gap-space-md">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-space-xs">
+                  <span class="px-space-sm py-space-2xs rounded-full bg-surface text-primary font-label-sm text-label-sm shadow-sm">本月累计支出</span>
+                  <span class="font-caption text-caption text-text-muted">2025年11月</span>
+                </div>
+                <div class="flex items-center gap-space-2xs bg-surface/80 backdrop-blur px-space-sm py-space-2xs rounded-full shadow-sm">
+                  <span class="font-label-sm text-label-sm text-flow-expense flex items-center">▲ 12%</span>
+                  <span class="font-caption text-caption text-text-muted">vs 上月同期</span>
+                </div>
+              </div>
+              <div class="flex items-baseline gap-space-xs">
+                <span class="font-headline-lg text-headline-lg text-primary font-semibold">¥</span>
+                <span class="font-display-hero text-display-hero text-text-primary font-bold tracking-tight">3,420.50</span>
+                <span class="font-body-sm text-body-sm text-text-secondary ml-space-xs">共 42 笔明细</span>
+              </div>
+              <!-- Budget Progress Module -->
+              <div class="flex flex-col gap-space-xs pt-space-xs">
+                <div class="flex items-center justify-between font-caption text-caption">
+                  <div class="flex items-center gap-space-2xs">
+                    <span class="text-text-secondary">总预算使用</span>
+                    <span class="font-label-sm text-label-sm text-status-warning font-semibold">85% 预警</span>
+                  </div>
+                  <div class="text-text-primary">
+                    剩余 <span class="font-label-md text-label-md text-primary">¥580.00</span> / ¥4,000.00
+                  </div>
+                </div>
+                <div class="w-full h-1.5 rounded-full bg-track-unfilled overflow-hidden">
+                  <div class="h-full rounded-full bg-status-warning transition-all duration-500" style="width: 85%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Recent Ledger Stream Card (3 Recent rows with uniform 48px row height) -->
+          <div class="w-full rounded-[16px] bg-surface p-space-lg md:p-space-xl shadow-sm flex flex-col gap-space-md">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-space-xs">
+                <span class="w-2 h-4 rounded-full bg-tertiary"></span>
+                <h3 class="font-headline-md text-headline-md text-text-primary">近期收支流水</h3>
+                <span class="font-caption text-caption text-text-muted">实时入账</span>
+              </div>
+              <a class="font-label-sm text-label-sm text-primary hover:text-secondary flex items-center gap-space-2xs transition-colors" href="transactions.html">
+                <span>查看全部明细</span>
+                <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+              </a>
+            </div>
+            <div class="flex flex-col divide-y divide-border-hairline" id="recentRecordsList">
+              <!-- Row 1: 48px strict touch height -->
+              <div class="h-12 flex items-center justify-between py-space-xs hover:bg-surface-container-low rounded-[8px] px-space-xs transition-colors">
+                <div class="flex items-center gap-space-sm min-w-0">
+                  <div class="w-7 h-7 rounded-[8px] bg-cat-dining/15 flex items-center justify-center text-cat-dining shrink-0">
+                    <span class="material-symbols-outlined text-[18px]">restaurant</span>
+                  </div>
+                  <div class="flex flex-col min-w-0">
+                    <span class="font-body-md text-body-md text-text-primary font-medium truncate">精品烘焙咖啡与可颂</span>
+                    <span class="font-caption text-caption text-text-muted">今天 15:20 · 餐饮</span>
+                  </div>
+                </div>
+                <div class="text-right shrink-0">
+                  <div class="font-label-md text-label-md text-flow-expense font-semibold">-¥38.00</div>
+                  <div class="font-caption text-caption text-text-muted">日常零用卡</div>
+                </div>
+              </div>
+              <!-- Row 2 -->
+              <div class="h-12 flex items-center justify-between py-space-xs hover:bg-surface-container-low rounded-[8px] px-space-xs transition-colors">
+                <div class="flex items-center gap-space-sm min-w-0">
+                  <div class="w-7 h-7 rounded-[8px] bg-cat-transport/15 flex items-center justify-center text-cat-transport shrink-0">
+                    <span class="material-symbols-outlined text-[18px]">directions_subway</span>
+                  </div>
+                  <div class="flex flex-col min-w-0">
+                    <span class="font-body-md text-body-md text-text-primary font-medium truncate">地铁往返通勤充值</span>
+                    <span class="font-caption text-caption text-text-muted">今天 08:45 · 交通</span>
+                  </div>
+                </div>
+                <div class="text-right shrink-0">
+                  <div class="font-label-md text-label-md text-flow-expense font-semibold">-¥48.00</div>
+                  <div class="font-caption text-caption text-text-muted">交通联合卡</div>
+                </div>
+              </div>
+              <!-- Row 3 -->
+              <div class="h-12 flex items-center justify-between py-space-xs hover:bg-surface-container-low rounded-[8px] px-space-xs transition-colors">
+                <div class="flex items-center gap-space-sm min-w-0">
+                  <div class="w-7 h-7 rounded-[8px] bg-cat-shopping/15 flex items-center justify-center text-cat-shopping shrink-0">
+                    <span class="material-symbols-outlined text-[18px]">shopping_bag</span>
+                  </div>
+                  <div class="flex flex-col min-w-0">
+                    <span class="font-body-md text-body-md text-text-primary font-medium truncate">秋冬暖绒围巾与手套</span>
+                    <span class="font-caption text-caption text-text-muted">昨天 19:30 · 购物</span>
+                  </div>
+                </div>
+                <div class="text-right shrink-0">
+                  <div class="font-label-md text-label-md text-flow-expense font-semibold">-¥129.00</div>
+                  <div class="font-caption text-caption text-text-muted">花呗 / 随身账户</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- RIGHT AUXILIARY COLUMN (4 Cols on Desktop) -->
+        <div class="lg:col-span-4 flex flex-col gap-space-lg md:gap-space-xl min-w-0">
+          <!-- Card 1: Today's Expense Snapshot Capsule -->
+          <div class="w-full rounded-[16px] bg-surface p-space-lg shadow-sm flex flex-col gap-space-md">
+            <div class="flex items-center justify-between">
+              <span class="font-label-md text-label-md text-text-primary">今日支出速览</span>
+              <span class="px-space-sm py-space-2xs rounded-full bg-surface-hero font-caption text-caption text-primary">已记 2 笔</span>
+            </div>
+            <div class="p-space-md rounded-[12px] bg-surface-container-low flex items-center justify-between">
+              <div>
+                <span class="font-caption text-caption text-text-muted block">今日总支出</span>
+                <div class="flex items-baseline gap-space-2xs mt-space-2xs">
+                  <span class="font-headline-md text-headline-md text-flow-expense font-bold">¥86.00</span>
+                  <span class="font-caption text-caption text-text-secondary">较昨日少 ¥43</span>
+                </div>
+              </div>
+              <div class="w-10 h-10 rounded-full bg-surface flex items-center justify-center text-primary shadow-sm">
+                <span class="material-symbols-outlined text-[20px]">calendar_today</span>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-space-xs font-caption text-caption">
+              <div class="p-space-xs rounded-[8px] bg-surface-bright flex flex-col">
+                <span class="text-text-muted">餐饮占比</span>
+                <span class="font-label-sm text-label-sm text-text-primary mt-space-2xs font-semibold">44.2%</span>
+              </div>
+              <div class="p-space-xs rounded-[8px] bg-surface-bright flex flex-col">
+                <span class="text-text-muted">交通占比</span>
+                <span class="font-label-sm text-label-sm text-text-primary mt-space-2xs font-semibold">55.8%</span>
+              </div>
+            </div>
+          </div>
+          <!-- Card 3: Top 3 Monthly Spending Categories (Mini Leaderboard) -->
+          <div class="w-full rounded-[16px] bg-surface p-space-lg shadow-sm flex flex-col gap-space-md">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-space-xs">
+                <span class="w-2 h-4 rounded-full bg-secondary"></span>
+                <h4 class="font-label-md text-label-md text-text-primary">本月支出 Top 3</h4>
+              </div>
+              <span class="font-caption text-caption text-text-muted">占总额 78%</span>
+            </div>
+            <div class="flex flex-col gap-space-sm">
+              <!-- Rank 1: Dining -->
+              <div class="flex flex-col gap-space-2xs">
+                <div class="flex items-center justify-between font-caption text-caption">
+                  <div class="flex items-center gap-space-xs">
+                    <span class="w-4 h-4 rounded-full bg-cat-dining/20 text-cat-dining font-bold text-[10px] flex items-center justify-center">1</span>
+                    <span class="font-label-sm text-label-sm text-text-primary">餐饮美食</span>
+                  </div>
+                  <div class="flex items-center gap-space-xs">
+                    <span class="font-label-sm text-label-sm text-text-primary font-medium">¥1,420.00</span>
+                    <span class="text-text-muted">41.5%</span>
+                  </div>
+                </div>
+                <div class="w-full h-1.5 rounded-full bg-track-unfilled overflow-hidden">
+                  <div class="h-full rounded-full bg-cat-dining" style="width: 41.5%;"></div>
+                </div>
+              </div>
+              <!-- Rank 2: Housing -->
+              <div class="flex flex-col gap-space-2xs">
+                <div class="flex items-center justify-between font-caption text-caption">
+                  <div class="flex items-center gap-space-xs">
+                    <span class="w-4 h-4 rounded-full bg-cat-housing/20 text-cat-housing font-bold text-[10px] flex items-center justify-center">2</span>
+                    <span class="font-label-sm text-label-sm text-text-primary">居住水电</span>
+                  </div>
+                  <div class="flex items-center gap-space-xs">
+                    <span class="font-label-sm text-label-sm text-text-primary font-medium">¥850.00</span>
+                    <span class="text-text-muted">24.8%</span>
+                  </div>
+                </div>
+                <div class="w-full h-1.5 rounded-full bg-track-unfilled overflow-hidden">
+                  <div class="h-full rounded-full bg-cat-housing" style="width: 24.8%;"></div>
+                </div>
+              </div>
+              <!-- Rank 3: Shopping -->
+              <div class="flex flex-col gap-space-2xs">
+                <div class="flex items-center justify-between font-caption text-caption">
+                  <div class="flex items-center gap-space-xs">
+                    <span class="w-4 h-4 rounded-full bg-cat-shopping/20 text-cat-shopping font-bold text-[10px] flex items-center justify-center">3</span>
+                    <span class="font-label-sm text-label-sm text-text-primary">日常购物</span>
+                  </div>
+                  <div class="flex items-center gap-space-xs">
+                    <span class="font-label-sm text-label-sm text-text-primary font-medium">¥410.50</span>
+                    <span class="text-text-muted">12.0%</span>
+                  </div>
+                </div>
+                <div class="w-full h-1.5 rounded-full bg-track-unfilled overflow-hidden">
+                  <div class="h-full rounded-full bg-cat-shopping" style="width: 12%;"></div>
+                </div>
+              </div>
+            </div>
+            <div class="pt-space-xs flex items-center justify-between border-t border-hairline font-caption text-caption text-text-secondary">
+              <span>环比上月结构对比</span>
+              <a class="text-primary hover:underline flex items-center gap-space-2xs" href="analytics.html">
+                <span>完整分析报表</span>
+                <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+              </a>
+            </div>
+          </div>
+          <!-- Gentle Budget Advice Card -->
+          <div class="w-full rounded-[16px] bg-surface-container-high/60 p-space-md flex items-center gap-space-md">
+            <div class="w-10 h-10 rounded-full bg-surface flex items-center justify-center text-primary shrink-0 shadow-sm">
+              <span class="text-[18px]">🍵</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="font-label-sm text-label-sm text-text-primary">理财小贴士</span>
+              <span class="font-caption text-caption text-text-secondary">本月还剩 25 天，日均预算建议保持在 ¥23.20 以内哦。</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Mobile Floating Action Pill Button (Visible under lg screens) -->
+      <div class="lg:hidden fixed bottom-20 right-4 z-40">
+        <button class="h-12 px-space-lg rounded-full bg-primary hover:bg-secondary text-on-primary font-label-md text-label-md flex items-center gap-space-xs shadow-lg active:scale-95 transition-all" id="mobileFloatRecordBtn" type="button">
+          <span class="text-[18px]">🌸</span>
+          <span>快速记账</span>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/shell.js"></script>
+  <script src="assets/js/pages/dashboard.js"></script>
+</body>
+</html>

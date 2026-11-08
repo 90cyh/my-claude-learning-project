@@ -1,0 +1,9 @@
+# 本地临时文件（目录名即"可删除"，不入库存档）
+TMP.可删除/
+
+# Claude Code 本地个人配置（权限白名单等，非项目文件）
+.claude/settings.local.json
+
+# Windows 系统文件
+Thumbs.db
+Desktop.ini

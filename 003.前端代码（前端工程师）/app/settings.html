@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>简记 · 我的</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌸</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script src="assets/js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="assets/css/base.css">
+</head>
+<body data-page="account-settings" class="bg-plane text-text-primary min-h-screen flex flex-col font-body-md text-body-md">
+
+  <!-- 页头 / 底部导航 / 页脚由 assets/js/shell.js 注入（含会话门禁） -->
+
+  <main class="w-full pt-14 flex-1 pb-24">
+    <div class="w-full max-w-7xl mx-auto px-margin md:px-margin-desktop py-space-xl">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-start">
+        <!-- ================= Left Column (4 cols) ================= -->
+        <aside class="lg:col-span-4 flex flex-col gap-space-xl">
+          <!-- Local Profile Card -->
+          <div class="relative overflow-hidden rounded-[16px] bg-surface shadow-[0_4px_16px_-2px_rgba(61,34,48,0.04)] p-space-xl">
+            <div class="absolute -right-8 -top-8 w-36 h-36 rounded-full bg-surface-hero opacity-70 pointer-events-none blur-2xl"></div>
+            <div class="flex flex-col items-center text-center relative z-10">
+              <div class="relative group cursor-pointer mb-space-md">
+                <div class="w-24 h-24 rounded-full p-1 bg-surface-variant flex items-center justify-center shadow-[0_4px_14px_rgba(61,34,48,0.08)]">
+                  <div class="w-full h-full rounded-full bg-surface-hero flex items-center justify-center text-[40px] select-none">🌸</div>
+                </div>
+                <button aria-label="更换头像" class="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-transform" type="button">
+                  <span class="material-symbols-outlined text-[16px]">edit</span>
+                </button>
+              </div>
+              <h1 class="font-headline-md text-headline-md text-text-primary flex items-center justify-center gap-space-2xs">
+                <span id="profile-username">小简同学</span>
+                <span class="text-[16px]">🌸</span>
+              </h1>
+              <p class="font-body-sm text-body-sm text-text-muted mt-space-2xs">本机账本空间 · <code class="font-label-sm text-label-sm text-tertiary" id="profile-id">#LOCAL</code></p>
+              <!-- Logout (PRD 6.1 / 5.9：我的页提供退出登录入口) -->
+              <button class="mt-space-md w-full h-10 rounded-full border border-status-danger/40 text-status-danger hover:bg-surface-container-low font-label-md text-label-md flex items-center justify-center gap-space-xs transition-colors" id="logout-btn" type="button">
+                <span class="material-symbols-outlined text-[18px]">logout</span>
+                <span>退出登录</span>
+              </button>
+              <!-- Micro Metrics Bento -->
+              <div class="grid grid-cols-2 gap-space-sm w-full mt-space-xl">
+                <div class="p-space-md rounded-[12px] bg-surface-container-low text-left">
+                  <div class="flex items-center gap-space-2xs text-text-muted mb-space-2xs">
+                    <span class="material-symbols-outlined text-[16px] text-cat-entertainment">local_fire_department</span>
+                    <span class="font-caption text-caption">坚持打卡</span>
+                  </div>
+                  <div class="flex items-baseline gap-space-2xs">
+                    <span class="font-headline-lg text-headline-lg text-text-primary font-semibold">18</span>
+                    <span class="font-caption text-caption text-text-secondary">天</span>
+                  </div>
+                  <div class="mt-space-2xs w-full bg-track-unfilled h-1.5 rounded-full overflow-hidden">
+                    <div class="bg-primary h-full rounded-full" style="width: 60%;"></div>
+                  </div>
+                </div>
+                <div class="p-space-md rounded-[12px] bg-surface-container-low text-left">
+                  <div class="flex items-center gap-space-2xs text-text-muted mb-space-2xs">
+                    <span class="material-symbols-outlined text-[16px] text-primary">receipt_long</span>
+                    <span class="font-caption text-caption">累计记账</span>
+                  </div>
+                  <div class="flex items-baseline gap-space-2xs">
+                    <span class="font-headline-lg text-headline-lg text-text-primary font-semibold">142</span>
+                    <span class="font-caption text-caption text-text-secondary">笔</span>
+                  </div>
+                  <div class="mt-space-2xs flex items-center gap-space-2xs">
+                    <span class="w-1.5 h-1.5 rounded-full bg-status-safe"></span>
+                    <span class="font-caption text-caption text-text-muted">已完全端侧哈希</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Multi-Account Switching Capsule Deck -->
+          <div class="rounded-[16px] bg-surface shadow-[0_4px_16px_-2px_rgba(61,34,48,0.04)] p-space-lg">
+            <div class="flex items-center justify-between mb-space-md">
+              <div class="flex items-center gap-space-xs">
+                <span class="material-symbols-outlined text-primary text-[18px]">switch_account</span>
+                <span class="font-label-md text-label-md text-text-primary">本机多账户切换</span>
+              </div>
+              <span class="font-caption text-caption text-text-muted">共 2 个账本空间</span>
+            </div>
+            <div class="flex flex-col gap-space-sm" id="account-switch-list">
+              <!-- Active Account Pill -->
+              <button class="w-full text-left p-space-sm rounded-full bg-surface-hero text-cta-label flex items-center justify-between group transition-colors" type="button">
+                <div class="flex items-center gap-space-sm min-w-0">
+                  <span class="w-8 h-8 rounded-full bg-surface flex items-center justify-center text-[16px]">🌸</span>
+                  <div class="flex flex-col min-w-0">
+                    <span class="font-label-md text-label-md truncate">小简同学 (个人生活)</span>
+                    <span class="font-caption text-caption text-text-secondary truncate">主账本 · 默认空间</span>
+                  </div>
+                </div>
+                <span class="material-symbols-outlined text-primary text-[20px] mr-space-xs">check_circle</span>
+              </button>
+              <!-- Secondary Inactive Account Pill -->
+              <button class="w-full text-left p-space-sm rounded-full bg-surface-container-low hover:bg-surface-hero text-on-surface-variant flex items-center justify-between group transition-colors" id="switch-account-btn" type="button">
+                <div class="flex items-center gap-space-sm min-w-0">
+                  <span class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center text-[16px]">☕</span>
+                  <div class="flex flex-col min-w-0">
+                    <span class="font-label-md text-label-md truncate text-text-primary">独立工作室账本</span>
+                    <span class="font-caption text-caption text-text-muted truncate">独立密码锁 · 36 笔记录</span>
+                  </div>
+                </div>
+                <span class="font-caption text-caption text-tertiary px-space-xs py-space-2xs rounded-full bg-surface group-hover:bg-primary group-hover:text-on-primary transition-colors">切换</span>
+              </button>
+            </div>
+            <button class="mt-space-md w-full h-10 rounded-full bg-surface-container-low hover:bg-surface-container text-tertiary font-label-md text-label-md flex items-center justify-center gap-space-xs transition-colors" id="add-account-btn" type="button">
+              <span class="material-symbols-outlined text-[18px]">add_circle</span>
+              <span>创建或关联本机新账本</span>
+            </button>
+          </div>
+        </aside>
+        <!-- ================= Right Column (8 cols) ================= -->
+        <div class="lg:col-span-8 flex flex-col gap-space-xl">
+          <!-- SECTION 1: 数据主权专区 (Data Sovereignty) -->
+          <section class="rounded-[16px] bg-surface shadow-[0_4px_16px_-2px_rgba(61,34,48,0.04)] p-space-xl">
+            <div class="p-space-lg rounded-[14px] bg-surface-container-low/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-space-lg group hover:bg-surface-hero transition-colors">
+              <div class="flex items-start sm:items-center gap-space-md min-w-0 flex-1">
+                <div class="w-10 h-10 rounded-[10px] bg-surface-variant flex items-center justify-center text-primary shrink-0">
+                  <span class="material-symbols-outlined text-[22px]">table_view</span>
+                </div>
+                <div class="flex flex-col min-w-0">
+                  <span class="font-label-md text-label-md text-text-primary">全量导出记账流水 (CSV)</span>
+                  <p class="font-caption text-caption text-text-secondary mt-space-2xs leading-relaxed">内嵌 <code class="font-semibold text-tertiary">UTF-8 BOM</code> 编码标头，确保在 Excel、Numbers、WPS 打开时文字与货币符号永不乱码。</p>
+                </div>
+              </div>
+              <button class="h-10 px-space-lg rounded-full bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md flex items-center justify-center gap-space-xs shadow-[0_2px_8px_rgba(174,26,100,0.18)] active:scale-95 transition-all shrink-0 w-full sm:w-auto" id="btn-export-csv" type="button">
+                <span class="material-symbols-outlined text-[18px]">download</span>
+                <span>导出全量 CSV 报表</span>
+              </button>
+            </div>
+          </section>
+          <!-- SECTION 2: 支付账户（资金钱包）管理 -->
+          <section class="rounded-[16px] bg-surface shadow-[0_4px_16px_-2px_rgba(61,34,48,0.04)] p-space-xl flex flex-col gap-space-lg">
+            <div class="flex flex-wrap items-center justify-between gap-space-sm">
+              <div class="flex items-center gap-space-sm">
+                <div class="w-10 h-10 rounded-[10px] bg-surface-variant flex items-center justify-center text-primary shrink-0">
+                  <span class="material-symbols-outlined text-[22px]">account_balance_wallet</span>
+                </div>
+                <div class="flex flex-col">
+                  <h2 class="font-headline-md text-headline-md text-text-primary flex items-center gap-space-2xs">
+                    <span>支付账户（资金钱包）管理</span>
+                    <span class="font-caption text-caption px-space-xs py-space-2xs rounded-full bg-surface-hero text-primary font-semibold">4 个活跃账户</span>
+                  </h2>
+                  <p class="font-caption text-caption text-text-secondary mt-space-2xs">独立核算不同支付渠道初始余额与净资金储备，端侧物理安全隔离</p>
+                </div>
+              </div>
+              <button type="button" class="h-10 px-space-lg rounded-full bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md flex items-center justify-center gap-space-xs shadow-[0_2px_8px_rgba(174,26,100,0.18)] active:scale-95 transition-all shrink-0" id="add-wallet-btn">
+                <span class="material-symbols-outlined text-[18px]">add</span>
+                <span>新增资金账户</span>
+              </button>
+            </div>
+            <!-- 资金储备总览微卡 -->
+            <div class="p-space-md rounded-[12px] bg-surface-container-low flex flex-col sm:flex-row sm:items-center justify-between gap-space-md">
+              <div class="flex items-center gap-space-md">
+                <div class="flex flex-col">
+                  <span class="font-caption text-caption text-text-muted">当前净资金储备折算 (CNY)</span>
+                  <span class="font-headline-lg text-headline-lg text-text-primary font-bold mt-space-2xs">¥ 37,020.50</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-space-xs text-text-secondary font-caption text-caption bg-surface px-space-sm py-space-xs rounded-full">
+                <span class="material-symbols-outlined text-[16px] text-status-safe">verified_user</span>
+                <span>实时口径：初始余额 + 收入 - 支出，本地自动核算不上传</span>
+              </div>
+            </div>
+            <!-- 账户列表卡片网格 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+              <!-- 微信支付 -->
+              <div class="p-space-md rounded-[14px] bg-surface-container-low/80 hover:bg-surface-hero transition-colors flex flex-col justify-between gap-space-md group">
+                <div class="flex items-start justify-between">
+                  <div class="flex items-center gap-space-sm">
+                    <div class="w-10 h-10 rounded-full bg-[#2ca257]/15 text-[#2ca257] flex items-center justify-center font-bold text-[18px]">
+                      <span class="material-symbols-outlined text-[20px]">chat</span>
+                    </div>
+                    <div class="flex flex-col">
+                      <div class="flex items-center gap-space-2xs">
+                        <span class="font-label-md text-label-md text-text-primary">微信支付</span>
+                        <span class="font-caption text-[11px] px-space-xs py-space-2xs rounded-full bg-surface-variant text-tertiary">默认支出</span>
+                      </div>
+                      <span class="font-caption text-caption text-text-muted">零钱与零钱通资金池</span>
+                    </div>
+                  </div>
+                  <button type="button" class="text-text-muted hover:text-primary transition-colors" title="账户设置">
+                    <span class="material-symbols-outlined text-[18px]">more_vert</span>
+                  </button>
+                </div>
+                <div class="flex items-baseline justify-between pt-space-xs border-t border-border-hairline">
+                  <span class="font-caption text-caption text-text-muted">可用余额</span>
+                  <span class="font-headline-md text-headline-md text-text-primary font-semibold">¥ 3,820.50</span>
+                </div>
+              </div>
+              <!-- 支付宝 -->
+              <div class="p-space-md rounded-[14px] bg-surface-container-low/80 hover:bg-surface-hero transition-colors flex flex-col justify-between gap-space-md group">
+                <div class="flex items-start justify-between">
+                  <div class="flex items-center gap-space-sm">
+                    <div class="w-10 h-10 rounded-full bg-[#4292e8]/15 text-[#4292e8] flex items-center justify-center font-bold text-[18px]">
+                      <span class="material-symbols-outlined text-[20px]">payments</span>
+                    </div>
+                    <div class="flex flex-col">
+                      <div class="flex items-center gap-space-2xs">
+                        <span class="font-label-md text-label-md text-text-primary">支付宝</span>
+                        <span class="font-caption text-[11px] px-space-xs py-space-2xs rounded-full bg-surface text-text-muted">日常消费</span>
+                      </div>
+                      <span class="font-caption text-caption text-text-muted">余额宝及关联快捷储蓄卡</span>
+                    </div>
+                  </div>
+                  <button type="button" class="text-text-muted hover:text-primary transition-colors" title="账户设置">
+                    <span class="material-symbols-outlined text-[18px]">more_vert</span>
+                  </button>
+                </div>
+                <div class="flex items-baseline justify-between pt-space-xs border-t border-border-hairline">
+                  <span class="font-caption text-caption text-text-muted">可用余额</span>
+                  <span class="font-headline-md text-headline-md text-text-primary font-semibold">¥ 8,150.00</span>
+                </div>
+              </div>
+              <!-- 招商银行储蓄卡 -->
+              <div class="p-space-md rounded-[14px] bg-surface-container-low/80 hover:bg-surface-hero transition-colors flex flex-col justify-between gap-space-md group">
+                <div class="flex items-start justify-between">
+                  <div class="flex items-center gap-space-sm">
+                    <div class="w-10 h-10 rounded-full bg-primary/15 text-primary flex items-center justify-center font-bold text-[18px]">
+                      <span class="material-symbols-outlined text-[20px]">credit_card</span>
+                    </div>
+                    <div class="flex flex-col">
+                      <div class="flex items-center gap-space-2xs">
+                        <span class="font-label-md text-label-md text-text-primary">招商银行储蓄卡</span>
+                        <span class="font-caption text-[11px] px-space-xs py-space-2xs rounded-full bg-surface text-text-muted">薪资收入</span>
+                      </div>
+                      <span class="font-caption text-caption text-text-muted">尾号 8816 · 主力理财金</span>
+                    </div>
+                  </div>
+                  <button type="button" class="text-text-muted hover:text-primary transition-colors" title="账户设置">
+                    <span class="material-symbols-outlined text-[18px]">more_vert</span>
+                  </button>
+                </div>
+                <div class="flex items-baseline justify-between pt-space-xs border-t border-border-hairline">
+                  <span class="font-caption text-caption text-text-muted">可用余额</span>
+                  <span class="font-headline-md text-headline-md text-text-primary font-semibold">¥ 24,600.00</span>
+                </div>
+              </div>
+              <!-- 随身现金 -->
+              <div class="p-space-md rounded-[14px] bg-surface-container-low/80 hover:bg-surface-hero transition-colors flex flex-col justify-between gap-space-md group">
+                <div class="flex items-start justify-between">
+                  <div class="flex items-center gap-space-sm">
+                    <div class="w-10 h-10 rounded-full bg-[#c99510]/15 text-[#c99510] flex items-center justify-center font-bold text-[18px]">
+                      <span class="material-symbols-outlined text-[20px]">toll</span>
+                    </div>
+                    <div class="flex flex-col">
+                      <div class="flex items-center gap-space-2xs">
+                        <span class="font-label-md text-label-md text-text-primary">随身现金</span>
+                        <span class="font-caption text-[11px] px-space-xs py-space-2xs rounded-full bg-surface text-text-muted">应急零钱</span>
+                      </div>
+                      <span class="font-caption text-caption text-text-muted">钱包物理钞票备用</span>
+                    </div>
+                  </div>
+                  <button type="button" class="text-text-muted hover:text-primary transition-colors" title="账户设置">
+                    <span class="material-symbols-outlined text-[18px]">more_vert</span>
+                  </button>
+                </div>
+                <div class="flex items-baseline justify-between pt-space-xs border-t border-border-hairline">
+                  <span class="font-caption text-caption text-text-muted">可用余额</span>
+                  <span class="font-headline-md text-headline-md text-text-primary font-semibold">¥ 450.00</span>
+                </div>
+              </div>
+            </div>
+          </section>
+          <!-- SECTION 3: 个性化偏好 (Personalization & Preferences) -->
+          <section class="rounded-[16px] bg-surface shadow-[0_4px_16px_-2px_rgba(61,34,48,0.04)] p-space-xl flex flex-col gap-space-lg">
+            <div class="flex items-center gap-space-sm">
+              <div class="w-10 h-10 rounded-[10px] bg-surface-variant flex items-center justify-center text-primary shrink-0">
+                <span class="material-symbols-outlined text-[22px]">tune</span>
+              </div>
+              <div class="flex flex-col">
+                <h2 class="font-headline-md text-headline-md text-text-primary">个性化偏好与记账体验</h2>
+                <p class="font-caption text-caption text-text-secondary mt-space-2xs">符合日常直觉的手感调校与温润粉调界面外观设置</p>
+              </div>
+            </div>
+            <!-- 主题外观选择器 -->
+            <div class="flex flex-col gap-space-sm">
+              <span class="font-label-md text-label-md text-text-primary">主题外观与色彩风格</span>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-space-sm">
+                <button type="button" class="theme-btn p-space-md rounded-[12px] bg-surface-hero border-2 border-primary flex items-center justify-between text-left transition-all" data-theme-choice="light">
+                  <div class="flex items-center gap-space-sm">
+                    <span class="text-[20px]">🌸</span>
+                    <div class="flex flex-col">
+                      <span class="font-label-md text-label-md text-primary font-semibold">浅色粉润</span>
+                      <span class="font-caption text-caption text-text-secondary">治愈微粉日常</span>
+                    </div>
+                  </div>
+                  <span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+                </button>
+                <button type="button" class="theme-btn p-space-md rounded-[12px] bg-surface-container-low hover:bg-surface-hero border-2 border-transparent flex items-center justify-between text-left transition-all" data-theme-choice="dark">
+                  <div class="flex items-center gap-space-sm">
+                    <span class="text-[20px]">🌙</span>
+                    <div class="flex flex-col">
+                      <span class="font-label-md text-label-md text-text-primary">深色梅紫</span>
+                      <span class="font-caption text-caption text-text-muted">柔和低眩光夜视</span>
+                    </div>
+                  </div>
+                  <span class="w-4 h-4 rounded-full border border-outline-variant"></span>
+                </button>
+                <button type="button" class="theme-btn p-space-md rounded-[12px] bg-surface-container-low hover:bg-surface-hero border-2 border-transparent flex items-center justify-between text-left transition-all" data-theme-choice="auto">
+                  <div class="flex items-center gap-space-sm">
+                    <span class="text-[20px]">💻</span>
+                    <div class="flex flex-col">
+                      <span class="font-label-md text-label-md text-text-primary">跟随系统</span>
+                      <span class="font-caption text-caption text-text-muted">自适应光暗切换</span>
+                    </div>
+                  </div>
+                  <span class="w-4 h-4 rounded-full border border-outline-variant"></span>
+                </button>
+              </div>
+            </div>
+            <!-- 记账交互开关项列表 -->
+            <div class="flex flex-col divide-y divide-border-hairline">
+              <!-- 1. 金额键盘快速四则运算 -->
+              <div class="py-space-md flex items-center justify-between gap-space-md">
+                <div class="flex flex-col min-w-0 pr-space-sm">
+                  <span class="font-label-md text-label-md text-text-primary">记账键盘快速四则运算</span>
+                  <p class="font-caption text-caption text-text-muted mt-space-2xs">在金额输入框内键入如 <code class="text-tertiary font-semibold">15+3.5</code> 时，自动即时计算并求和为 18.5 元</p>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                  <input type="checkbox" checked="" class="sr-only peer" id="toggle-arith">
+                  <div class="w-11 h-6 bg-track-unfilled peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                </label>
+              </div>
+              <!-- 2. 敏感金额一键打码隐私模式 -->
+              <div class="py-space-md flex items-center justify-between gap-space-md">
+                <div class="flex flex-col min-w-0 pr-space-sm">
+                  <span class="font-label-md text-label-md text-text-primary">敏感金额一键打码隐私模式</span>
+                  <p class="font-caption text-caption text-text-muted mt-space-2xs">在公共场合将所有资产总额与单笔交易数字显示为 <code class="text-tertiary font-semibold">*****</code></p>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                  <input type="checkbox" class="sr-only peer" id="toggle-privacy">
+                  <div class="w-11 h-6 bg-track-unfilled peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                </label>
+              </div>
+              <!-- 3. 危险操作：清空当前账本 -->
+              <div class="py-space-md flex items-center justify-between gap-space-md">
+                <div class="flex flex-col min-w-0 pr-space-sm">
+                  <span class="font-label-md text-label-md text-status-danger">危险操作 · 清空当前账本数据</span>
+                  <p class="font-caption text-caption text-text-muted mt-space-2xs">本地哈希不可逆，重置后本机全部明细与凭据将被永久抹除且无法找回</p>
+                </div>
+                <button class="h-10 px-space-lg rounded-full border border-status-danger/40 text-status-danger hover:bg-surface-container-low font-label-md text-label-md transition-colors shrink-0" id="open-danger-modal-btn" type="button">
+                  重置账户
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+    <!-- Micro Interaction Toast Feedback Container -->
+    <div class="fixed bottom-20 md:bottom-10 left-1/2 -translate-x-1/2 z-50 transform translate-y-8 opacity-0 pointer-events-none transition-all duration-300 px-space-lg py-space-sm rounded-full bg-inverse-surface text-inverse-on-surface shadow-[0_12px_32px_-4px_rgba(61,34,48,0.2)] flex items-center gap-space-xs font-label-sm text-label-sm" id="toast-message">
+      <span class="material-symbols-outlined text-primary-fixed text-[18px]" id="toast-icon">check_circle</span>
+      <span id="toast-text">操作已完成</span>
+    </div>
+    <!-- Danger Reset Confirmation Dialog Modal -->
+    <div class="fixed inset-0 z-50 bg-inverse-surface/40 backdrop-blur-sm hidden items-center justify-center p-space-md" id="danger-modal">
+      <div class="bg-surface w-full max-w-[460px] rounded-[16px] p-space-xl shadow-[0_12px_32px_-4px_rgba(61,34,48,0.12)] flex flex-col gap-space-lg transform scale-95 transition-all" id="danger-modal-box">
+        <div class="flex items-center gap-space-md">
+          <div class="w-12 h-12 rounded-full bg-error-container text-on-error-container flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[24px]">crisis_alert</span>
+          </div>
+          <div class="flex flex-col">
+            <h3 class="font-headline-md text-headline-md text-text-primary">确认重置账户数据？</h3>
+            <span class="font-caption text-caption text-text-muted">警告：此操作不可挽回</span>
+          </div>
+        </div>
+        <div class="p-space-md rounded-[12px] bg-surface-container-high text-on-surface-variant font-body-sm text-body-sm leading-relaxed">
+          根据 PRD 5.9 本地单机加密原则，简记绝不保存任何用户的明文私钥。一旦重置，本机中保留的 <strong>142 笔明细</strong>、预算设置与自定分类将被永久物理抹除。
+        </div>
+        <div class="flex flex-col gap-space-2xs">
+          <label class="font-label-sm text-label-sm text-text-secondary" for="confirm-input">请输入口令确认：<code class="font-bold text-status-danger">RESET</code></label>
+          <input class="h-11 px-space-md rounded-[12px] bg-surface-container-low text-text-primary font-body-md text-body-md outline-none focus:bg-surface-variant transition-colors" id="confirm-input" placeholder="输入 RESET 确认删除" type="text">
+        </div>
+        <div class="flex items-center justify-end gap-space-sm pt-space-xs">
+          <button class="px-space-lg h-10 rounded-full bg-surface-container-low hover:bg-surface-container text-text-secondary font-label-md text-label-md transition-colors" id="close-danger-modal-btn" type="button">取消</button>
+          <button class="px-space-lg h-10 rounded-full bg-status-danger hover:opacity-90 text-on-error font-label-md text-label-md shadow-sm active:scale-95 transition-all opacity-50 cursor-not-allowed" disabled="" id="btn-confirm-delete" type="button">彻底清空并重置</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/shell.js"></script>
+  <script src="assets/js/toast.js"></script>
+  <script src="assets/js/pages/settings.js"></script>
+</body>
+</html>

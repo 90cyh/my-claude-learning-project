@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>简记 · 登录</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌸</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script src="assets/js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="assets/css/base.css">
+</head>
+<body class="bg-plane font-body-md text-on-surface antialiased flex items-center justify-center min-h-screen" style="background: radial-gradient(circle at 50% 25%, rgb(253, 238, 245) 0%, rgb(251, 243, 246) 55%, rgb(249, 233, 241) 100%); min-height: 100vh;">
+<main class="w-full flex justify-center p-4 sm:p-margin-desktop min-h-screen items-center">
+  <div class="flex flex-col w-full items-center justify-center">
+    <!-- Backdrop Ambient Glow Orbs -->
+    <div class="relative w-full max-w-[400px]">
+      <div class="absolute -top-12 -left-12 w-44 h-44 bg-secondary-container/20 rounded-full blur-3xl pointer-events-none -z-10"></div>
+      <div class="absolute -bottom-10 -right-10 w-48 h-48 bg-primary-fixed-dim/35 rounded-full blur-3xl pointer-events-none -z-10"></div>
+      <!-- Outer double-layer glow border wrap -->
+      <div class="p-[1px] rounded-[20px] bg-gradient-to-b from-white/90 via-outline-variant/30 to-secondary-fixed/40 shadow-[0_16px_40px_-8px_rgba(174,26,100,0.08),0_4px_16px_rgba(236,79,147,0.05)]">
+        <!-- Main Card Container -->
+        <div class="w-full bg-surface/95 backdrop-blur-md rounded-[18px] p-6 sm:p-8 relative overflow-hidden border border-white/60">
+          <div class="absolute -top-5 -right-5 w-20 h-20 rounded-full bg-surface-hero/70 pointer-events-none flex items-center justify-center">
+            <span class="text-tertiary-fixed opacity-45 select-none text-3xl">🌸</span>
+          </div>
+          <!-- Header & Brand Section -->
+          <div class="flex flex-col text-left pt-1">
+            <div class="flex items-center justify-center mb-5">
+              <div class="flex items-center gap-3.5">
+                <div class="w-12 h-12 rounded-[14px] bg-surface-hero/90 border border-outline-variant/30 flex items-center justify-center shadow-[0_4px_12px_rgba(236,79,147,0.12)] transition-transform duration-300 hover:scale-105">
+                  <svg class="w-8 h-8" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                    <g filter="drop-shadow(0px 2px 6px rgba(236,79,147,0.25))">
+                      <path d="M24 16C21.5 10 26.5 6 29 8C31 9.5 30 14 24 16Z" fill="#ec4f93" opacity="0.95"></path>
+                      <path d="M24 16C26.5 10 21.5 6 19 8C17 9.5 18 14 24 16Z" fill="#ec4f93" opacity="0.95"></path>
+                      <path d="M30 20C36 17.5 40 22.5 38 25C36.5 27 32 26 30 20Z" fill="#ec4f93" opacity="0.95"></path>
+                      <path d="M30 25C36 27.5 35 33.5 32 34.5C29.5 35.5 27 31.5 30 25Z" fill="#ec4f93" opacity="0.95"></path>
+                      <path d="M24 28C24 35 18 36 16 33.5C14.5 31.5 18 28 24 28Z" fill="#ec4f93" opacity="0.95"></path>
+                      <path d="M24 28C24 35 30 36 32 33.5C33.5 31.5 30 28 24 28Z" fill="#ec4f93" opacity="0.95"></path>
+                      <path d="M18 25C12 27.5 13 33.5 16 34.5C18.5 35.5 21 31.5 18 25Z" fill="#ec4f93" opacity="0.95"></path>
+                      <path d="M18 20C12 17.5 8 22.5 10 25C11.5 27 16 26 18 20Z" fill="#ec4f93" opacity="0.95"></path>
+                      <circle cx="24" cy="22" fill="#ae1a64" r="4.5"></circle>
+                      <circle cx="24" cy="22" fill="#ffd9e5" r="2"></circle>
+                    </g>
+                  </svg>
+                </div>
+                <span class="text-[24px] leading-tight font-bold tracking-tight text-text-primary">简记</span>
+              </div>
+            </div>
+            <!-- Core Title & Emotive Subtitle -->
+            <h1 class="text-[24px] sm:text-[26px] font-bold text-text-primary tracking-tight text-left flex items-center gap-2">
+              <span>欢迎回来</span>
+              <span class="text-xl sm:text-2xl select-none">🌸</span>
+            </h1>
+            <p class="font-body-md text-body-sm sm:text-body-md text-text-secondary mt-2 text-left leading-relaxed">
+              管理您的日常开支与温暖账本，开启今天的心灵记录
+            </p>
+          </div>
+          <!-- Core Form -->
+          <form class="flex flex-col gap-4 mt-5" id="auth-form">
+            <!-- Username Field -->
+            <div class="flex flex-col gap-1.5">
+              <label class="font-label-sm text-label-sm text-text-primary flex items-center gap-1.5" for="username">
+                <span class="material-symbols-outlined text-[16px] text-primary">account_circle</span>
+                <span>账户名称</span>
+              </label>
+              <div class="relative flex items-center">
+                <input class="w-full px-4 bg-surface-container-lowest/90 text-text-primary font-body-md rounded-xl border border-outline-variant/35 outline-none placeholder:text-text-muted shadow-sm transition-all duration-200 h-[44px] focus:border-secondary focus:ring-4 focus:ring-secondary/15 focus:bg-white" id="username" maxlength="20" minlength="3" placeholder="请输入 3~20 位中文/字母/数字" required="" type="text">
+                <span class="absolute right-3.5 text-secondary/60 text-sm select-none pointer-events-none">🌸</span>
+              </div>
+            </div>
+            <!-- Password Field -->
+            <div class="flex flex-col gap-1.5">
+              <div class="flex items-center justify-between">
+                <label class="font-label-sm text-label-sm text-text-primary flex items-center gap-1.5" for="password">
+                  <span class="material-symbols-outlined text-[16px] text-primary">key</span>
+                  <span>访问密码</span>
+                </label>
+                <span class="font-caption text-caption text-text-muted">6~64 位字符</span>
+              </div>
+              <div class="relative flex items-center">
+                <input class="w-full pl-4 pr-11 bg-surface-container-lowest/90 text-text-primary font-body-md rounded-xl border border-outline-variant/35 outline-none placeholder:text-text-muted shadow-sm transition-all duration-200 h-[44px] focus:border-secondary focus:ring-4 focus:ring-secondary/15 focus:bg-white" id="password" maxlength="64" minlength="6" placeholder="请输入本地保护密码" required="" type="password">
+                <button aria-label="切换密码可见性" class="absolute right-2 rounded-lg flex items-center justify-center text-text-muted hover:text-text-primary hover:bg-surface-hero transition-colors w-8 h-8" id="toggle-pwd-btn" type="button">
+                  <span class="material-symbols-outlined text-[20px]" id="pwd-icon">visibility_off</span>
+                </button>
+              </div>
+            </div>
+            <!-- Primary Action Capsule Button -->
+            <button class="w-full h-[46px] rounded-full bg-gradient-to-r from-[#d83b7d] to-[#c22e6e] hover:brightness-105 active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 text-[15px] font-semibold text-white shadow-[0_8px_20px_rgba(216,59,125,0.32)] hover:shadow-[0_10px_24px_rgba(216,59,125,0.4)] mt-1" id="submit-cta-btn" type="submit">
+              <span>立即进入记账</span>
+              <span>🌸</span>
+            </button>
+            <!-- 登录失败提示（PRD 5.9：统一文案，不区分错因） -->
+            <p class="hidden text-flow-expense font-body-sm text-body-sm text-center" id="login-error">用户名或密码错误</p>
+          </form>
+          <!-- Subtle Offline Security Endorsement Banner -->
+          <div class="mt-4 flex items-center justify-center">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-hero/80 border border-outline-variant/30 text-[12px] text-text-secondary select-none">
+              <span class="text-[13px]">🌸</span>
+              <span class="font-medium">100% 离线沙盒安全 · 凭证不出设备</span>
+            </div>
+          </div>
+          <!-- Bottom Actions -->
+          <div class="mt-4 pt-2 flex items-center justify-center gap-3">
+            <a class="flex items-center gap-1.5 font-body-sm text-body-sm" href="register.html"><span class="text-text-secondary">还没账号？</span><span class="font-medium text-primary hover:underline transition-colors">立即注册</span></a>
+            <span class="text-outline-variant/50">·</span>
+            <button class="font-body-sm text-body-sm text-text-secondary hover:text-primary transition-colors" id="open-reset-modal-btn" type="button">忘记密码？</button>
+            <button aria-label="单机安全帮助说明" class="text-text-muted hover:text-text-primary transition-colors flex items-center" id="help-btn" title="单机隐私安全说明" type="button">
+              <span class="material-symbols-outlined text-[18px]">help</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Reset Account Modal -->
+    <div aria-labelledby="reset-modal-title" aria-modal="true" class="fixed inset-0 bg-inverse-surface/30 backdrop-blur-sm flex items-center justify-center p-4 z-50 transition-opacity duration-200 opacity-0 hidden" id="reset-modal" role="dialog">
+      <div class="bg-surface w-full max-w-[380px] rounded-2xl p-5 shadow-2xl shadow-text-primary/20 flex flex-col gap-4 transform transition-transform duration-200 border border-outline-variant/40 scale-95" id="reset-modal-card">
+        <div class="w-10 h-10 rounded-xl bg-surface-container-high flex items-center justify-center text-status-danger mx-auto">
+          <span class="material-symbols-outlined text-headline-lg">lock_reset</span>
+        </div>
+        <div class="text-center">
+          <h3 class="font-headline-md text-headline-md text-text-primary" id="reset-modal-title">重置本机账户数据？</h3>
+          <p class="font-body-sm text-body-sm text-text-secondary mt-2 leading-relaxed">
+            根据单机架构与隐私保护原则，密码哈希不可被解密与找回。重置操作将<strong class="text-flow-expense font-semibold">永久清空当前浏览器存储的全部记账流水与密钥凭据</strong>。
+          </p>
+        </div>
+        <div class="p-3 bg-surface-container-low rounded-xl text-caption font-caption text-text-muted flex items-center gap-2">
+          <span class="material-symbols-outlined text-status-warning text-headline-md">info</span>
+          <span>提示：若有重要账单，请在平时经常通过「设置」导出 CSV 归档。</span>
+        </div>
+        <div class="flex items-center gap-3 mt-2">
+          <button class="flex-1 h-11 rounded-full bg-surface-hero hover:bg-surface-container text-cta-label font-label-md text-label-md transition-all" id="close-reset-modal-btn" type="button">取消并返回</button>
+          <button class="flex-1 h-11 rounded-full bg-flow-expense hover:opacity-90 text-on-error font-label-md text-label-md shadow-sm transition-all" id="confirm-reset-btn" type="button">确认彻底清空</button>
+        </div>
+      </div>
+    </div>
+    <!-- Toast -->
+    <div class="fixed bottom-10 left-1/2 -translate-x-1/2 z-[60] transform translate-y-8 opacity-0 pointer-events-none transition-all duration-300 px-space-lg py-space-sm rounded-full bg-inverse-surface text-inverse-on-surface shadow-[0_12px_32px_-4px_rgba(61,34,48,0.2)] flex items-center gap-space-xs font-label-sm text-label-sm" id="toast-message">
+      <span class="material-symbols-outlined text-primary-fixed text-[18px]" id="toast-icon">check_circle</span>
+      <span id="toast-text">操作已完成</span>
+    </div>
+  </div>
+</main>
+
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/toast.js"></script>
+<script>
+  (function () {
+    'use strict';
+    /* PRD 5.9 路由规则：已有会话者访问登录页直接回首页 */
+    window.JIANJI.redirectIfAuthed();
+
+    var submitCtaBtn = document.getElementById('submit-cta-btn');
+    var usernameInput = document.getElementById('username');
+    var passwordInput = document.getElementById('password');
+    var togglePwdBtn = document.getElementById('toggle-pwd-btn');
+    var pwdIcon = document.getElementById('pwd-icon');
+    var loginError = document.getElementById('login-error');
+
+    var resetModal = document.getElementById('reset-modal');
+    var resetModalCard = document.getElementById('reset-modal-card');
+    var openResetModalBtn = document.getElementById('open-reset-modal-btn');
+    var closeResetModalBtn = document.getElementById('close-reset-modal-btn');
+    var confirmResetBtn = document.getElementById('confirm-reset-btn');
+    var helpBtn = document.getElementById('help-btn');
+
+    togglePwdBtn.addEventListener('click', function () {
+      var isPwd = passwordInput.getAttribute('type') === 'password';
+      passwordInput.setAttribute('type', isPwd ? 'text' : 'password');
+      pwdIcon.textContent = isPwd ? 'visibility' : 'visibility_off';
+    });
+
+    helpBtn.addEventListener('click', function () {
+      alert('【简记安全架构说明】\n\n简记采用纯前端离线单机架构，所有账单明细与加密凭据仅存放在当前浏览器本地存储中。\n\n密码采用 PBKDF2/SHA-256 离线单向哈希验证，无云端同步与远程服务器。若遗忘密码，仅可通过重置彻底清空。建议常在「设置」中导出 CSV 备份。');
+    });
+
+    function showModal() {
+      resetModal.classList.remove('hidden');
+      requestAnimationFrame(function () {
+        resetModal.classList.remove('opacity-0');
+        resetModalCard.classList.remove('scale-95');
+      });
+    }
+    function hideModal() {
+      resetModal.classList.add('opacity-0');
+      resetModalCard.classList.add('scale-95');
+      setTimeout(function () { resetModal.classList.add('hidden'); }, 200);
+    }
+    openResetModalBtn.addEventListener('click', showModal);
+    closeResetModalBtn.addEventListener('click', hideModal);
+    resetModal.addEventListener('click', function (e) {
+      if (e.target === resetModal) hideModal();
+    });
+    confirmResetBtn.addEventListener('click', function () {
+      usernameInput.value = '';
+      passwordInput.value = '';
+      hideModal();
+      showToast('本机数据已重置，可用该用户名重新注册', 'restart_alt');
+    });
+
+    /* 登录提交（原型：不做真实凭证校验，校验逻辑见 002 实现版） */
+    document.getElementById('auth-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var name = usernameInput.value.trim();
+      if (!name || !passwordInput.value) {
+        loginError.classList.remove('hidden');
+        return;
+      }
+      loginError.classList.add('hidden');
+      submitCtaBtn.innerHTML = '<span>正在开启本地账本...</span><span>🌸</span>';
+      submitCtaBtn.disabled = true;
+      setTimeout(function () {
+        window.JIANJI.login(name);
+        location.href = 'index.html';
+      }, 500);
+    });
+  })();
+</script>
+</body>
+</html>

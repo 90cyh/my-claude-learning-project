@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>简记 · 注册</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌸</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script src="assets/js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="assets/css/base.css">
+</head>
+<body class="bg-[#fbf3f6] text-[#2b1421] antialiased min-h-screen flex items-center justify-center relative overflow-x-hidden selection:bg-[#fe6faa]/20 selection:text-[#ae1a64]" style="background: radial-gradient(circle at 50% 20%, rgb(253, 240, 246) 0%, rgb(251, 243, 246) 55%, rgb(247, 230, 239) 100%); min-height: 100vh;">
+  <!-- Ambient Decorative Background Glows -->
+  <div class="fixed top-[-10%] right-[-5%] w-[420px] h-[420px] rounded-full bg-[#ffd8ea]/40 blur-3xl pointer-events-none"></div>
+  <div class="fixed bottom-[-10%] left-[-5%] w-[450px] h-[450px] rounded-full bg-[#ffe8f1]/60 blur-3xl pointer-events-none"></div>
+  <main class="w-full flex justify-center items-center p-4 sm:p-6 min-h-screen relative z-10">
+    <div class="relative w-full max-w-[420px]">
+      <!-- Main Registration Card -->
+      <div class="relative bg-[#fefafc]/95 backdrop-blur-md rounded-[24px] p-6 sm:p-8 shadow-[0_20px_50px_rgba(236,79,147,0.08)] border border-[#f3d9e5] overflow-hidden transition-all duration-300">
+        <div class="absolute -top-5 -right-5 w-20 h-20 rounded-full bg-surface-hero/70 pointer-events-none flex items-center justify-center">
+          <span class="text-tertiary-fixed opacity-45 select-none text-3xl">🌸</span>
+        </div>
+        <!-- Brand Emblem & Header -->
+        <div class="flex flex-col text-left mb-5">
+          <div class="flex items-center justify-center gap-3.5 mb-5">
+            <div class="w-12 h-12 rounded-[14px] bg-surface-hero/90 border border-outline-variant/30 flex items-center justify-center shadow-[0_4px_12px_rgba(236,79,147,0.12)] transition-transform duration-300 hover:scale-105">
+              <svg class="w-8 h-8" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                <g filter="drop-shadow(0px 2px 6px rgba(236,79,147,0.25))">
+                  <path d="M24 16C21.5 10 26.5 6 29 8C31 9.5 30 14 24 16Z" fill="#ec4f93" opacity="0.95"></path>
+                  <path d="M24 16C26.5 10 21.5 6 19 8C17 9.5 18 14 24 16Z" fill="#ec4f93" opacity="0.95"></path>
+                  <path d="M30 20C36 17.5 40 22.5 38 25C36.5 27 32 26 30 20Z" fill="#ec4f93" opacity="0.95"></path>
+                  <path d="M30 25C36 27.5 35 33.5 32 34.5C29.5 35.5 27 31.5 30 25Z" fill="#ec4f93" opacity="0.95"></path>
+                  <path d="M24 28C24 35 18 36 16 33.5C14.5 31.5 18 28 24 28Z" fill="#ec4f93" opacity="0.95"></path>
+                  <path d="M24 28C24 35 30 36 32 33.5C33.5 31.5 30 28 24 28Z" fill="#ec4f93" opacity="0.95"></path>
+                  <path d="M18 25C12 27.5 13 33.5 16 34.5C18.5 35.5 21 31.5 18 25Z" fill="#ec4f93" opacity="0.95"></path>
+                  <path d="M18 20C12 17.5 8 22.5 10 25C11.5 27 16 26 18 20Z" fill="#ec4f93" opacity="0.95"></path>
+                  <circle cx="24" cy="22" fill="#ae1a64" r="4.5"></circle>
+                  <circle cx="24" cy="22" fill="#ffd9e5" r="2"></circle>
+                </g>
+              </svg>
+            </div>
+            <span class="text-[24px] leading-tight font-bold tracking-tight text-text-primary">简记</span>
+          </div>
+          <h1 class="text-[22px] sm:text-[24px] font-bold text-[#3d2230] tracking-tight leading-snug text-left flex items-center gap-1.5">
+            <span>开启专属生活账本</span>
+            <span class="text-xl inline-block transition-transform duration-300 hover:rotate-12 cursor-default">🌸</span>
+          </h1>
+        </div>
+        <!-- Registration Form -->
+        <form class="flex flex-col gap-4" id="registerForm">
+          <!-- Field 1: Account Name -->
+          <div class="flex flex-col gap-1.5 text-left">
+            <div class="flex justify-between items-center px-0.5">
+              <label class="font-medium text-[#3d2230] text-[13px] flex items-center gap-1" for="username">
+                <span class="material-symbols-outlined text-[16px] text-primary">account_circle</span>
+                <span>账号名称</span>
+              </label>
+              <span class="text-[#9d8392] text-[11px]">3~20位，支持中文/英文/数字</span>
+            </div>
+            <div class="relative flex items-center group">
+              <div class="absolute left-3.5 text-[#9d8392] group-focus-within:text-[#ae1a64] transition-colors pointer-events-none flex items-center">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                  <path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </div>
+              <input class="w-full h-10 pl-10 pr-10 rounded-xl bg-[#fefafc] border border-[#e8cedb] text-[#3d2230] placeholder:text-[#9d8392] placeholder:text-[13px] text-[13px] focus:outline-none focus:border-[#fe6faa] focus:ring-2 focus:ring-[#fe6faa]/20 transition-all duration-150" id="username" maxlength="20" name="username" placeholder="例如：小简同学 / 我的日常账本" required="" type="text">
+              <span class="absolute right-3.5 text-secondary/60 text-sm select-none pointer-events-none">🌸</span>
+            </div>
+          </div>
+          <!-- Field 2: Password -->
+          <div class="flex flex-col gap-1.5 text-left">
+            <div class="flex justify-between items-center px-0.5">
+              <label class="font-medium text-[#3d2230] text-[13px] flex items-center gap-1" for="password">
+                <span class="material-symbols-outlined text-[16px] text-primary">key</span>
+                <span>设置访问密码</span>
+              </label>
+              <span class="text-[#9d8392] text-[11px]">6~64 位字符 · 本地密码无法找回，请牢记</span>
+            </div>
+            <div class="relative flex items-center group">
+              <div class="absolute left-3.5 text-[#9d8392] group-focus-within:text-[#ae1a64] transition-colors pointer-events-none flex items-center">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                  <path d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </div>
+              <input class="w-full h-10 pl-10 pr-10 rounded-xl bg-[#fefafc] border border-[#e8cedb] text-[#3d2230] placeholder:text-[#9d8392] placeholder:text-[13px] text-[13px] focus:outline-none focus:border-[#fe6faa] focus:ring-2 focus:ring-[#fe6faa]/20 transition-all duration-150" id="password" maxlength="64" minlength="6" name="password" placeholder="请输入本地访问密码" required="" type="password">
+              <button class="absolute right-3 text-[#9d8392] hover:text-[#3d2230] transition-colors flex items-center justify-center p-1 rounded-md focus:outline-none" id="toggle-pwd-btn" title="切换显示密码" type="button">
+                <svg class="w-4 h-4" fill="none" id="pwdToggleIcon" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                  <path d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <!-- Field 3: Confirm Password -->
+          <div class="flex flex-col gap-1.5 text-left">
+            <div class="flex justify-between items-center px-0.5">
+              <label class="font-medium text-[#3d2230] text-[13px] flex items-center gap-1" for="confirmPassword">
+                <span class="material-symbols-outlined text-[16px] text-primary">key</span>
+                <span>确认访问密码</span>
+              </label>
+            </div>
+            <div class="relative flex items-center group">
+              <div class="absolute left-3.5 text-[#9d8392] group-focus-within:text-[#ae1a64] transition-colors pointer-events-none flex items-center">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                  <path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </div>
+              <input class="w-full h-10 pl-10 pr-10 rounded-xl bg-[#fefafc] border border-[#e8cedb] text-[#3d2230] placeholder:text-[#9d8392] placeholder:text-[13px] text-[13px] focus:outline-none focus:border-[#fe6faa] focus:ring-2 focus:ring-[#fe6faa]/20 transition-all duration-150" id="confirmPassword" maxlength="64" minlength="6" name="confirmPassword" placeholder="请再次输入访问密码" required="" type="password">
+              <button class="absolute right-3 text-[#9d8392] hover:text-[#3d2230] transition-colors flex items-center justify-center p-1 rounded-md focus:outline-none" id="toggle-confirm-btn" title="切换显示密码" type="button">
+                <svg class="w-4 h-4" fill="none" id="confirmPwdToggleIcon" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                  <path d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <p class="hidden text-flow-expense text-[12px] text-center" id="register-error"></p>
+          <!-- Primary Action Button -->
+          <button class="w-full h-[46px] rounded-full bg-gradient-to-r from-[#d83b7d] to-[#c22e6e] hover:brightness-105 active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 text-[15px] font-semibold text-white shadow-[0_8px_20px_rgba(216,59,125,0.32)] hover:shadow-[0_10px_24px_rgba(216,59,125,0.4)] mt-1" id="submitBtn" type="submit">
+            <span>立即创建本地账本</span>
+            <span>🌸</span>
+          </button>
+        </form>
+        <!-- Secondary Links & Endorsement Footer -->
+        <div class="flex flex-col items-center mt-5 pt-4 border-t border-[#f3d9e5]/80 gap-3">
+          <a class="text-[13px] text-[#aa2b66] hover:text-[#ae1a64] font-semibold flex items-center gap-1 transition-colors group py-0.5" href="login.html">
+            <span>已有账号？立即登录</span>
+            <span class="inline-block transition-transform duration-200 group-hover:translate-x-0.5">→</span>
+          </a>
+          <div class="flex items-center gap-1.5 text-[#9d8392] text-[11px] font-medium">
+            <svg class="w-3.5 h-3.5 text-[#2ca257]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+            <span>100% 离线沙盒安全 · 凭证与数据不出设备</span>
+          </div>
+        </div>
+      </div>
+      <div class="w-11/12 h-2.5 mx-auto bg-[#ffe8f1]/80 rounded-b-2xl blur-[1px] -mt-1 pointer-events-none"></div>
+    </div>
+  </main>
+
+  <script src="assets/js/auth.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      /* PRD 5.9 路由规则：已有会话者访问注册页直接回首页 */
+      window.JIANJI.redirectIfAuthed();
+
+      var form = document.getElementById('registerForm');
+      var usernameInput = document.getElementById('username');
+      var passwordInput = document.getElementById('password');
+      var confirmInput = document.getElementById('confirmPassword');
+      var errorEl = document.getElementById('register-error');
+      var submitBtn = document.getElementById('submitBtn');
+
+      function togglePwd(inputId, iconId) {
+        var input = document.getElementById(inputId);
+        var icon = document.getElementById(iconId);
+        if (!input || !icon) return;
+        var eyeOpen = '<path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>';
+        var eyeOff = '<path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />';
+        if (input.type === 'password') {
+          input.type = 'text';
+          icon.innerHTML = eyeOff;
+        } else {
+          input.type = 'password';
+          icon.innerHTML = eyeOpen;
+        }
+      }
+      document.getElementById('toggle-pwd-btn').addEventListener('click', function () { togglePwd('password', 'pwdToggleIcon'); });
+      document.getElementById('toggle-confirm-btn').addEventListener('click', function () { togglePwd('confirmPassword', 'confirmPwdToggleIcon'); });
+
+      function showError(msg) {
+        errorEl.textContent = msg;
+        errorEl.classList.remove('hidden');
+      }
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        errorEl.classList.add('hidden');
+
+        var username = usernameInput.value.trim();
+        var pwd = passwordInput.value;
+        var confirmPwd = confirmInput.value;
+
+        /* PRD 5.9 注册字段规则 */
+        if (!/^[一-龥A-Za-z0-9_]{3,20}$/.test(username)) {
+          showError('账号名称需为 3~20 位中文/字母/数字/下划线');
+          return;
+        }
+        if (pwd.length < 6 || pwd.length > 64) {
+          showError('访问密码长度需为 6~64 位字符');
+          return;
+        }
+        if (pwd !== confirmPwd) {
+          showError('两次输入的密码不一致，请核对后重新输入');
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span>正在创建本地账本...</span>🌸';
+        /* 原型：不做真实哈希注册（PBKDF2 落地在 002 实现版），直接建立会话进入首页 */
+        setTimeout(function () {
+          window.JIANJI.login(username);
+          location.href = 'index.html';
+        }, 600);
+      });
+    })();
+  </script>
+</body>
+</html>
