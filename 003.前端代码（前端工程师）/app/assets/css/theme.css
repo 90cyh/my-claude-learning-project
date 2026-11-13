@@ -1,0 +1,162 @@
+/* ============================================================
+   简记 · 主题变量（明/暗两套独立选定值，对齐 PRD 6.3.2 梅紫暗调）
+   变量为 "R G B" 三元组，供 tailwind-config.js 以
+   rgb(var(--c-xxx) / <alpha-value>) 引用（支持 /NN 透明度修饰）
+   ============================================================ */
+:root {
+  color-scheme: light;
+  --c-plane: 251 243 246;
+  --c-surface: 254 250 252;
+  --c-surface-dim: 246 208 225;
+  --c-surface-bright: 255 248 248;
+  --c-surface-container-lowest: 255 255 255;
+  --c-surface-container-low: 255 240 245;
+  --c-surface-container: 255 232 241;
+  --c-surface-container-high: 255 224 237;
+  --c-surface-container-highest: 255 216 234;
+  --c-surface-hero: 253 238 245;
+  --c-surface-variant: 255 216 234;
+  --c-surface-tint: 178 29 102;
+  --c-on-surface: 43 20 33;
+  --c-on-surface-variant: 87 65 71;
+  --c-on-background: 43 20 33;
+  --c-background: 255 248 248;
+  --c-inverse-surface: 66 41 54;
+  --c-inverse-on-surface: 255 236 243;
+  --c-inverse-primary: 255 176 202;
+  --c-outline: 139 112 120;
+  --c-outline-variant: 222 190 199;
+  --c-primary: 174 26 100;
+  --c-on-primary: 255 255 255;
+  --c-primary-container: 207 56 125;
+  --c-on-primary-container: 255 251 255;
+  --c-primary-fixed: 255 217 227;
+  --c-primary-fixed-dim: 255 176 202;
+  --c-on-primary-fixed: 62 0 31;
+  --c-on-primary-fixed-variant: 141 0 77;
+  --c-secondary: 170 43 102;
+  --c-on-secondary: 255 255 255;
+  --c-secondary-container: 254 111 170;
+  --c-on-secondary-container: 113 0 62;
+  --c-secondary-fixed: 255 217 227;
+  --c-secondary-fixed-dim: 255 176 203;
+  --c-on-secondary-fixed: 62 0 31;
+  --c-on-secondary-fixed-variant: 138 12 78;
+  --c-tertiary: 156 54 104;
+  --c-on-tertiary: 255 255 255;
+  --c-tertiary-container: 186 78 129;
+  --c-on-tertiary-container: 255 251 255;
+  --c-tertiary-fixed: 255 217 229;
+  --c-tertiary-fixed-dim: 255 176 207;
+  --c-on-tertiary-fixed: 61 0 35;
+  --c-on-tertiary-fixed-variant: 129 31 82;
+  --c-error: 186 26 26;
+  --c-on-error: 255 255 255;
+  --c-error-container: 255 218 214;
+  --c-on-error-container: 147 0 10;
+  --c-text-primary: 61 34 48;
+  --c-text-secondary: 122 92 107;
+  --c-text-muted: 157 131 146;
+  --c-cta-label: 74 16 41;
+  --c-gridline: 242 223 231;
+  --c-track-unfilled: 246 231 238;
+  --c-flow-expense: 194 46 78;
+  --c-flow-income: 26 122 66;
+  --c-status-safe: 47 162 84;
+  --c-status-caution: 217 158 20;
+  --c-status-warning: 224 106 42;
+  --c-status-danger: 214 69 96;
+  --c-cat-dining: 232 117 46;
+  --c-cat-transport: 66 146 232;
+  --c-cat-shopping: 154 92 216;
+  --c-cat-housing: 44 162 87;
+  --c-cat-entertainment: 230 86 151;
+  --c-cat-medical: 212 63 86;
+  --c-cat-education: 23 160 145;
+  --c-cat-social: 201 149 16;
+  --c-cat-other: 157 131 146;
+  --c-hairline: 61 34 48;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --c-plane: 23 15 20;
+  --c-surface: 33 23 34;
+  --c-surface-dim: 26 18 25;
+  --c-surface-bright: 43 31 44;
+  --c-surface-container-lowest: 27 18 27;
+  --c-surface-container-low: 36 25 37;
+  --c-surface-container: 43 31 44;
+  --c-surface-container-high: 50 36 51;
+  --c-surface-container-highest: 58 42 59;
+  --c-surface-hero: 43 27 40;
+  --c-surface-variant: 58 36 51;
+  --c-surface-tint: 242 127 177;
+  --c-on-surface: 247 236 242;
+  --c-on-surface-variant: 211 185 200;
+  --c-on-background: 247 236 242;
+  --c-background: 23 15 20;
+  --c-inverse-surface: 254 250 252;
+  --c-inverse-on-surface: 33 23 34;
+  --c-inverse-primary: 174 26 100;
+  --c-outline: 156 127 144;
+  --c-outline-variant: 74 54 68;
+  --c-primary: 242 127 177;
+  --c-on-primary: 61 15 36;
+  --c-primary-container: 217 106 159;
+  --c-on-primary-container: 255 240 247;
+  --c-primary-fixed: 92 35 64;
+  --c-primary-fixed-dim: 176 48 107;
+  --c-on-primary-fixed: 255 217 229;
+  --c-on-primary-fixed-variant: 255 199 221;
+  --c-secondary: 244 127 180;
+  --c-on-secondary: 61 15 36;
+  --c-secondary-container: 227 95 150;
+  --c-on-secondary-container: 255 217 229;
+  --c-secondary-fixed: 92 35 64;
+  --c-secondary-fixed-dim: 176 48 107;
+  --c-on-secondary-fixed: 255 217 229;
+  --c-on-secondary-fixed-variant: 255 199 221;
+  --c-tertiary: 232 123 164;
+  --c-on-tertiary: 61 15 36;
+  --c-tertiary-container: 176 48 107;
+  --c-on-tertiary-container: 255 240 247;
+  --c-tertiary-fixed: 92 35 64;
+  --c-tertiary-fixed-dim: 176 48 107;
+  --c-on-tertiary-fixed: 255 217 229;
+  --c-on-tertiary-fixed-variant: 255 199 221;
+  --c-error: 232 122 140;
+  --c-on-error: 255 255 255;
+  --c-error-container: 66 41 48;
+  --c-on-error-container: 242 184 197;
+  --c-text-primary: 247 236 242;
+  --c-text-secondary: 211 185 200;
+  --c-text-muted: 156 127 144;
+  --c-cta-label: 61 15 36;
+  --c-gridline: 54 38 51;
+  --c-track-unfilled: 58 42 55;
+  --c-flow-expense: 242 135 158;
+  --c-flow-income: 88 201 138;
+  --c-status-safe: 78 193 127;
+  --c-status-caution: 217 165 46;
+  --c-status-warning: 232 130 79;
+  --c-status-danger: 232 122 140;
+  --c-cat-dining: 205 98 41;
+  --c-cat-transport: 71 137 221;
+  --c-cat-shopping: 148 120 216;
+  --c-cat-housing: 53 165 94;
+  --c-cat-entertainment: 227 95 150;
+  --c-cat-medical: 209 75 92;
+  --c-cat-education: 31 148 131;
+  --c-cat-social: 181 132 16;
+  --c-cat-other: 156 127 144;
+  --c-hairline: 255 255 255;
+}
+
+/* 登录/注册页背景（明暗各自的樱粉渐变） */
+.auth-bg {
+  background: radial-gradient(circle at 50% 25%, rgb(253 238 245) 0%, rgb(251 243 246) 55%, rgb(249 233 241) 100%);
+}
+[data-theme="dark"] .auth-bg {
+  background: radial-gradient(circle at 50% 25%, rgb(43 27 40) 0%, rgb(33 23 34) 55%, rgb(26 18 25) 100%);
+}

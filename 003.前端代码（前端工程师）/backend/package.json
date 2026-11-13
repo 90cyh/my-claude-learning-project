@@ -1,0 +1,14 @@
+{
+  "name": "jianji-backend",
+  "version": "1.0.2",
+  "private": true,
+  "description": "简记后端：注册/登录/退出/会话（Express + MySQL，PRD V1.0.2）",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "mysql2": "^3.11.0"
+  }
+}

@@ -8,10 +8,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script src="assets/js/theme.js"></script>
   <script src="assets/js/tailwind-config.js"></script>
   <link rel="stylesheet" href="assets/css/base.css">
 </head>
-<body class="bg-plane font-body-md text-on-surface antialiased flex items-center justify-center min-h-screen" style="background: radial-gradient(circle at 50% 25%, rgb(253, 238, 245) 0%, rgb(251, 243, 246) 55%, rgb(249, 233, 241) 100%); min-height: 100vh;">
+<body class="auth-bg bg-plane font-body-md text-on-surface antialiased flex items-center justify-center min-h-screen">
 <main class="w-full flex justify-center p-4 sm:p-margin-desktop min-h-screen items-center">
   <div class="flex flex-col w-full items-center justify-center">
     <!-- Backdrop Ambient Glow Orbs -->
@@ -87,20 +88,13 @@
               </div>
             </div>
             <!-- Primary Action Capsule Button -->
-            <button class="w-full h-[46px] rounded-full bg-gradient-to-r from-[#d83b7d] to-[#c22e6e] hover:brightness-105 active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 text-[15px] font-semibold text-white shadow-[0_8px_20px_rgba(216,59,125,0.32)] hover:shadow-[0_10px_24px_rgba(216,59,125,0.4)] mt-1" id="submit-cta-btn" type="submit">
+            <button class="w-full h-[46px] rounded-full bg-[#c22e6e] hover:bg-[#a82459] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 text-[15px] font-semibold text-white shadow-[0_8px_20px_rgba(216,59,125,0.32)] hover:shadow-[0_10px_24px_rgba(216,59,125,0.4)] mt-1" id="submit-cta-btn" type="submit">
               <span>立即进入记账</span>
               <span>🌸</span>
             </button>
             <!-- 登录失败提示（PRD 5.9：统一文案，不区分错因） -->
             <p class="hidden text-flow-expense font-body-sm text-body-sm text-center" id="login-error">用户名或密码错误</p>
           </form>
-          <!-- Subtle Offline Security Endorsement Banner -->
-          <div class="mt-4 flex items-center justify-center">
-            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-hero/80 border border-outline-variant/30 text-[12px] text-text-secondary select-none">
-              <span class="text-[13px]">🌸</span>
-              <span class="font-medium">100% 离线沙盒安全 · 凭证不出设备</span>
-            </div>
-          </div>
           <!-- Bottom Actions -->
           <div class="mt-4 pt-2 flex items-center justify-center gap-3">
             <a class="flex items-center gap-1.5 font-body-sm text-body-sm" href="register.html"><span class="text-text-secondary">还没账号？</span><span class="font-medium text-primary hover:underline transition-colors">立即注册</span></a>
@@ -148,8 +142,10 @@
 <script>
   (function () {
     'use strict';
-    /* PRD 5.9 路由规则：已有会话者访问登录页直接回首页 */
-    window.JIANJI.redirectIfAuthed();
+    /* PRD 5.9 路由规则：已有会话者访问登录页直接回首页（V1.0.2：问服务端） */
+    window.JIANJI.me().then(function (me) {
+      if (me && me.username) location.replace('index.html');
+    });
 
     var submitCtaBtn = document.getElementById('submit-cta-btn');
     var usernameInput = document.getElementById('username');
@@ -172,7 +168,7 @@
     });
 
     helpBtn.addEventListener('click', function () {
-      alert('【简记安全架构说明】\n\n简记采用纯前端离线单机架构，所有账单明细与加密凭据仅存放在当前浏览器本地存储中。\n\n密码采用 PBKDF2/SHA-256 离线单向哈希验证，无云端同步与远程服务器。若遗忘密码，仅可通过重置彻底清空。建议常在「设置」中导出 CSV 备份。');
+      alert('【简记安全架构说明】\n\n简记采用自建服务器架构（Node.js + MySQL），账单明细与账户凭证仅存放在你自己的服务器/电脑中，不经任何第三方云。\n\n密码采用 PBKDF2/SHA-256 单向哈希存储，数据库中不保存明文。若遗忘密码，可在本地部署中重置账户。建议常在「我的」页导出 CSV 备份。');
     });
 
     function showModal() {
@@ -199,21 +195,27 @@
       showToast('本机数据已重置，可用该用户名重新注册', 'restart_alt');
     });
 
-    /* 登录提交（原型：不做真实凭证校验，校验逻辑见 002 实现版） */
-    document.getElementById('auth-form').addEventListener('submit', function (e) {
+    /* 登录提交（V1.0.2：调用后端 /api/auth/login，真实凭证校验） */
+    document.getElementById('auth-form').addEventListener('submit', async function (e) {
       e.preventDefault();
       var name = usernameInput.value.trim();
       if (!name || !passwordInput.value) {
+        loginError.textContent = '请输入用户名与密码';
         loginError.classList.remove('hidden');
         return;
       }
       loginError.classList.add('hidden');
-      submitCtaBtn.innerHTML = '<span>正在开启本地账本...</span><span>🌸</span>';
+      submitCtaBtn.innerHTML = '<span>正在开启账本...</span><span>🌸</span>';
       submitCtaBtn.disabled = true;
-      setTimeout(function () {
-        window.JIANJI.login(name);
+      try {
+        await window.JIANJI.login(name, passwordInput.value);
         location.href = 'index.html';
-      }, 500);
+      } catch (err) {
+        loginError.textContent = err.message;
+        loginError.classList.remove('hidden');
+        submitCtaBtn.disabled = false;
+        submitCtaBtn.innerHTML = '<span>立即进入记账</span><span>🌸</span>';
+      }
     });
   })();
 </script>

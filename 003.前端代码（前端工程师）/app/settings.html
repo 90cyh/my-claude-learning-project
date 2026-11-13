@@ -10,6 +10,7 @@
   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script src="assets/js/theme.js"></script>
   <script src="assets/js/tailwind-config.js"></script>
   <link rel="stylesheet" href="assets/css/base.css">
 </head>
@@ -28,17 +29,18 @@
             <div class="flex flex-col items-center text-center relative z-10">
               <div class="relative group cursor-pointer mb-space-md">
                 <div class="w-24 h-24 rounded-full p-1 bg-surface-variant flex items-center justify-center shadow-[0_4px_14px_rgba(61,34,48,0.08)]">
-                  <div class="w-full h-full rounded-full bg-surface-hero flex items-center justify-center text-[40px] select-none">🌸</div>
+                  <img id="profile-avatar" alt="头像" class="w-full h-full rounded-full object-cover hidden" src="">
+                  <div id="profile-avatar-fallback" class="w-full h-full rounded-full bg-surface-hero flex items-center justify-center text-[40px] select-none">🌸</div>
                 </div>
-                <button aria-label="更换头像" class="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-transform" type="button">
+                <button aria-label="更换头像" id="avatar-edit-btn" class="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-transform" type="button">
                   <span class="material-symbols-outlined text-[16px]">edit</span>
                 </button>
+                <input type="file" id="avatar-input" accept="image/*" class="hidden">
               </div>
               <h1 class="font-headline-md text-headline-md text-text-primary flex items-center justify-center gap-space-2xs">
                 <span id="profile-username">小简同学</span>
                 <span class="text-[16px]">🌸</span>
               </h1>
-              <p class="font-body-sm text-body-sm text-text-muted mt-space-2xs">本机账本空间 · <code class="font-label-sm text-label-sm text-tertiary" id="profile-id">#LOCAL</code></p>
               <!-- Logout (PRD 6.1 / 5.9：我的页提供退出登录入口) -->
               <button class="mt-space-md w-full h-10 rounded-full border border-status-danger/40 text-status-danger hover:bg-surface-container-low font-label-md text-label-md flex items-center justify-center gap-space-xs transition-colors" id="logout-btn" type="button">
                 <span class="material-symbols-outlined text-[18px]">logout</span>
@@ -52,7 +54,7 @@
                     <span class="font-caption text-caption">坚持打卡</span>
                   </div>
                   <div class="flex items-baseline gap-space-2xs">
-                    <span class="font-headline-lg text-headline-lg text-text-primary font-semibold">18</span>
+                    <span class="font-headline-lg text-headline-lg text-text-primary font-semibold" id="stat-streak">0</span>
                     <span class="font-caption text-caption text-text-secondary">天</span>
                   </div>
                   <div class="mt-space-2xs w-full bg-track-unfilled h-1.5 rounded-full overflow-hidden">
@@ -65,76 +67,20 @@
                     <span class="font-caption text-caption">累计记账</span>
                   </div>
                   <div class="flex items-baseline gap-space-2xs">
-                    <span class="font-headline-lg text-headline-lg text-text-primary font-semibold">142</span>
+                    <span class="font-headline-lg text-headline-lg text-text-primary font-semibold" id="stat-total">0</span>
                     <span class="font-caption text-caption text-text-secondary">笔</span>
                   </div>
                   <div class="mt-space-2xs flex items-center gap-space-2xs">
                     <span class="w-1.5 h-1.5 rounded-full bg-status-safe"></span>
-                    <span class="font-caption text-caption text-text-muted">已完全端侧哈希</span>
+                    <span class="font-caption text-caption text-text-muted">数据实时同步至自建数据库</span>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <!-- Multi-Account Switching Capsule Deck -->
-          <div class="rounded-[16px] bg-surface shadow-[0_4px_16px_-2px_rgba(61,34,48,0.04)] p-space-lg">
-            <div class="flex items-center justify-between mb-space-md">
-              <div class="flex items-center gap-space-xs">
-                <span class="material-symbols-outlined text-primary text-[18px]">switch_account</span>
-                <span class="font-label-md text-label-md text-text-primary">本机多账户切换</span>
-              </div>
-              <span class="font-caption text-caption text-text-muted">共 2 个账本空间</span>
-            </div>
-            <div class="flex flex-col gap-space-sm" id="account-switch-list">
-              <!-- Active Account Pill -->
-              <button class="w-full text-left p-space-sm rounded-full bg-surface-hero text-cta-label flex items-center justify-between group transition-colors" type="button">
-                <div class="flex items-center gap-space-sm min-w-0">
-                  <span class="w-8 h-8 rounded-full bg-surface flex items-center justify-center text-[16px]">🌸</span>
-                  <div class="flex flex-col min-w-0">
-                    <span class="font-label-md text-label-md truncate">小简同学 (个人生活)</span>
-                    <span class="font-caption text-caption text-text-secondary truncate">主账本 · 默认空间</span>
-                  </div>
-                </div>
-                <span class="material-symbols-outlined text-primary text-[20px] mr-space-xs">check_circle</span>
-              </button>
-              <!-- Secondary Inactive Account Pill -->
-              <button class="w-full text-left p-space-sm rounded-full bg-surface-container-low hover:bg-surface-hero text-on-surface-variant flex items-center justify-between group transition-colors" id="switch-account-btn" type="button">
-                <div class="flex items-center gap-space-sm min-w-0">
-                  <span class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center text-[16px]">☕</span>
-                  <div class="flex flex-col min-w-0">
-                    <span class="font-label-md text-label-md truncate text-text-primary">独立工作室账本</span>
-                    <span class="font-caption text-caption text-text-muted truncate">独立密码锁 · 36 笔记录</span>
-                  </div>
-                </div>
-                <span class="font-caption text-caption text-tertiary px-space-xs py-space-2xs rounded-full bg-surface group-hover:bg-primary group-hover:text-on-primary transition-colors">切换</span>
-              </button>
-            </div>
-            <button class="mt-space-md w-full h-10 rounded-full bg-surface-container-low hover:bg-surface-container text-tertiary font-label-md text-label-md flex items-center justify-center gap-space-xs transition-colors" id="add-account-btn" type="button">
-              <span class="material-symbols-outlined text-[18px]">add_circle</span>
-              <span>创建或关联本机新账本</span>
-            </button>
           </div>
         </aside>
         <!-- ================= Right Column (8 cols) ================= -->
         <div class="lg:col-span-8 flex flex-col gap-space-xl">
-          <!-- SECTION 1: 数据主权专区 (Data Sovereignty) -->
-          <section class="rounded-[16px] bg-surface shadow-[0_4px_16px_-2px_rgba(61,34,48,0.04)] p-space-xl">
-            <div class="p-space-lg rounded-[14px] bg-surface-container-low/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-space-lg group hover:bg-surface-hero transition-colors">
-              <div class="flex items-start sm:items-center gap-space-md min-w-0 flex-1">
-                <div class="w-10 h-10 rounded-[10px] bg-surface-variant flex items-center justify-center text-primary shrink-0">
-                  <span class="material-symbols-outlined text-[22px]">table_view</span>
-                </div>
-                <div class="flex flex-col min-w-0">
-                  <span class="font-label-md text-label-md text-text-primary">全量导出记账流水 (CSV)</span>
-                  <p class="font-caption text-caption text-text-secondary mt-space-2xs leading-relaxed">内嵌 <code class="font-semibold text-tertiary">UTF-8 BOM</code> 编码标头，确保在 Excel、Numbers、WPS 打开时文字与货币符号永不乱码。</p>
-                </div>
-              </div>
-              <button class="h-10 px-space-lg rounded-full bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md flex items-center justify-center gap-space-xs shadow-[0_2px_8px_rgba(174,26,100,0.18)] active:scale-95 transition-all shrink-0 w-full sm:w-auto" id="btn-export-csv" type="button">
-                <span class="material-symbols-outlined text-[18px]">download</span>
-                <span>导出全量 CSV 报表</span>
-              </button>
-            </div>
-          </section>
           <!-- SECTION 2: 支付账户（资金钱包）管理 -->
           <section class="rounded-[16px] bg-surface shadow-[0_4px_16px_-2px_rgba(61,34,48,0.04)] p-space-xl flex flex-col gap-space-lg">
             <div class="flex flex-wrap items-center justify-between gap-space-sm">
@@ -145,7 +91,7 @@
                 <div class="flex flex-col">
                   <h2 class="font-headline-md text-headline-md text-text-primary flex items-center gap-space-2xs">
                     <span>支付账户（资金钱包）管理</span>
-                    <span class="font-caption text-caption px-space-xs py-space-2xs rounded-full bg-surface-hero text-primary font-semibold">4 个活跃账户</span>
+                    <span class="font-caption text-caption px-space-xs py-space-2xs rounded-full bg-surface-hero text-primary font-semibold" id="account-count">0 个活跃账户</span>
                   </h2>
                   <p class="font-caption text-caption text-text-secondary mt-space-2xs">独立核算不同支付渠道初始余额与净资金储备，端侧物理安全隔离</p>
                 </div>
@@ -160,7 +106,7 @@
               <div class="flex items-center gap-space-md">
                 <div class="flex flex-col">
                   <span class="font-caption text-caption text-text-muted">当前净资金储备折算 (CNY)</span>
-                  <span class="font-headline-lg text-headline-lg text-text-primary font-bold mt-space-2xs">¥ 37,020.50</span>
+                  <span class="font-headline-lg text-headline-lg text-text-primary font-bold mt-space-2xs" id="total-balance">¥ 0.00</span>
                 </div>
               </div>
               <div class="flex items-center gap-space-xs text-text-secondary font-caption text-caption bg-surface px-space-sm py-space-xs rounded-full">
@@ -168,105 +114,8 @@
                 <span>实时口径：初始余额 + 收入 - 支出，本地自动核算不上传</span>
               </div>
             </div>
-            <!-- 账户列表卡片网格 -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
-              <!-- 微信支付 -->
-              <div class="p-space-md rounded-[14px] bg-surface-container-low/80 hover:bg-surface-hero transition-colors flex flex-col justify-between gap-space-md group">
-                <div class="flex items-start justify-between">
-                  <div class="flex items-center gap-space-sm">
-                    <div class="w-10 h-10 rounded-full bg-[#2ca257]/15 text-[#2ca257] flex items-center justify-center font-bold text-[18px]">
-                      <span class="material-symbols-outlined text-[20px]">chat</span>
-                    </div>
-                    <div class="flex flex-col">
-                      <div class="flex items-center gap-space-2xs">
-                        <span class="font-label-md text-label-md text-text-primary">微信支付</span>
-                        <span class="font-caption text-[11px] px-space-xs py-space-2xs rounded-full bg-surface-variant text-tertiary">默认支出</span>
-                      </div>
-                      <span class="font-caption text-caption text-text-muted">零钱与零钱通资金池</span>
-                    </div>
-                  </div>
-                  <button type="button" class="text-text-muted hover:text-primary transition-colors" title="账户设置">
-                    <span class="material-symbols-outlined text-[18px]">more_vert</span>
-                  </button>
-                </div>
-                <div class="flex items-baseline justify-between pt-space-xs border-t border-border-hairline">
-                  <span class="font-caption text-caption text-text-muted">可用余额</span>
-                  <span class="font-headline-md text-headline-md text-text-primary font-semibold">¥ 3,820.50</span>
-                </div>
-              </div>
-              <!-- 支付宝 -->
-              <div class="p-space-md rounded-[14px] bg-surface-container-low/80 hover:bg-surface-hero transition-colors flex flex-col justify-between gap-space-md group">
-                <div class="flex items-start justify-between">
-                  <div class="flex items-center gap-space-sm">
-                    <div class="w-10 h-10 rounded-full bg-[#4292e8]/15 text-[#4292e8] flex items-center justify-center font-bold text-[18px]">
-                      <span class="material-symbols-outlined text-[20px]">payments</span>
-                    </div>
-                    <div class="flex flex-col">
-                      <div class="flex items-center gap-space-2xs">
-                        <span class="font-label-md text-label-md text-text-primary">支付宝</span>
-                        <span class="font-caption text-[11px] px-space-xs py-space-2xs rounded-full bg-surface text-text-muted">日常消费</span>
-                      </div>
-                      <span class="font-caption text-caption text-text-muted">余额宝及关联快捷储蓄卡</span>
-                    </div>
-                  </div>
-                  <button type="button" class="text-text-muted hover:text-primary transition-colors" title="账户设置">
-                    <span class="material-symbols-outlined text-[18px]">more_vert</span>
-                  </button>
-                </div>
-                <div class="flex items-baseline justify-between pt-space-xs border-t border-border-hairline">
-                  <span class="font-caption text-caption text-text-muted">可用余额</span>
-                  <span class="font-headline-md text-headline-md text-text-primary font-semibold">¥ 8,150.00</span>
-                </div>
-              </div>
-              <!-- 招商银行储蓄卡 -->
-              <div class="p-space-md rounded-[14px] bg-surface-container-low/80 hover:bg-surface-hero transition-colors flex flex-col justify-between gap-space-md group">
-                <div class="flex items-start justify-between">
-                  <div class="flex items-center gap-space-sm">
-                    <div class="w-10 h-10 rounded-full bg-primary/15 text-primary flex items-center justify-center font-bold text-[18px]">
-                      <span class="material-symbols-outlined text-[20px]">credit_card</span>
-                    </div>
-                    <div class="flex flex-col">
-                      <div class="flex items-center gap-space-2xs">
-                        <span class="font-label-md text-label-md text-text-primary">招商银行储蓄卡</span>
-                        <span class="font-caption text-[11px] px-space-xs py-space-2xs rounded-full bg-surface text-text-muted">薪资收入</span>
-                      </div>
-                      <span class="font-caption text-caption text-text-muted">尾号 8816 · 主力理财金</span>
-                    </div>
-                  </div>
-                  <button type="button" class="text-text-muted hover:text-primary transition-colors" title="账户设置">
-                    <span class="material-symbols-outlined text-[18px]">more_vert</span>
-                  </button>
-                </div>
-                <div class="flex items-baseline justify-between pt-space-xs border-t border-border-hairline">
-                  <span class="font-caption text-caption text-text-muted">可用余额</span>
-                  <span class="font-headline-md text-headline-md text-text-primary font-semibold">¥ 24,600.00</span>
-                </div>
-              </div>
-              <!-- 随身现金 -->
-              <div class="p-space-md rounded-[14px] bg-surface-container-low/80 hover:bg-surface-hero transition-colors flex flex-col justify-between gap-space-md group">
-                <div class="flex items-start justify-between">
-                  <div class="flex items-center gap-space-sm">
-                    <div class="w-10 h-10 rounded-full bg-[#c99510]/15 text-[#c99510] flex items-center justify-center font-bold text-[18px]">
-                      <span class="material-symbols-outlined text-[20px]">toll</span>
-                    </div>
-                    <div class="flex flex-col">
-                      <div class="flex items-center gap-space-2xs">
-                        <span class="font-label-md text-label-md text-text-primary">随身现金</span>
-                        <span class="font-caption text-[11px] px-space-xs py-space-2xs rounded-full bg-surface text-text-muted">应急零钱</span>
-                      </div>
-                      <span class="font-caption text-caption text-text-muted">钱包物理钞票备用</span>
-                    </div>
-                  </div>
-                  <button type="button" class="text-text-muted hover:text-primary transition-colors" title="账户设置">
-                    <span class="material-symbols-outlined text-[18px]">more_vert</span>
-                  </button>
-                </div>
-                <div class="flex items-baseline justify-between pt-space-xs border-t border-border-hairline">
-                  <span class="font-caption text-caption text-text-muted">可用余额</span>
-                  <span class="font-headline-md text-headline-md text-text-primary font-semibold">¥ 450.00</span>
-                </div>
-              </div>
-            </div>
+            <!-- 账户列表卡片网格（assets/js/pages/settings.js 按数据库实时渲染） -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md" id="account-list"></div>
           </section>
           <!-- SECTION 3: 个性化偏好 (Personalization & Preferences) -->
           <section class="rounded-[16px] bg-surface shadow-[0_4px_16px_-2px_rgba(61,34,48,0.04)] p-space-xl flex flex-col gap-space-lg">

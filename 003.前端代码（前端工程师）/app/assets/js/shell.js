@@ -4,11 +4,12 @@
      高亮当前导航（消除 4 份重复的页头/导航/页脚标记）。
    - 加载顺序：auth.js → 本文件（自带会话门禁）。
    ============================================================ */
-(function () {
+(async function () {
   'use strict';
 
-  /* PRD 5.9：无有效会话时主页面不可见 */
-  if (!window.JIANJI.requireSession()) return;
+  /* PRD 5.9 规则4：无有效会话时主页面不可见（V1.0.2 云端账户：询问服务端） */
+  var me = await window.JIANJI.me();
+  if (!me || !me.username) { location.replace('login.html'); return; }
 
   var NAV_ITEMS = [
     { path: 'dashboard',            href: 'index.html',        label: '首页', icon: 'home' },
@@ -18,8 +19,8 @@
   ];
   var current = document.body.dataset.page || 'dashboard';
 
-  /* 当前本地账户（头像菜单展示，PRD 6.1） */
-  var session = window.JIANJI.getSession();
+  /* 当前账户（头像菜单展示，PRD 6.1） */
+  var session = me;
   function esc(s) {
     return String(s).replace(/[&<>"']/g, function (m) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
@@ -49,10 +50,6 @@
           '</a>' +
         '</div>' +
         '<div class="flex items-center gap-space-sm">' +
-          '<div class="hidden sm:flex items-center gap-space-xs px-space-sm py-space-2xs rounded-full bg-surface">' +
-            '<span class="material-symbols-outlined text-primary text-[16px]">lock</span>' +
-            '<span class="font-caption text-caption text-text-secondary">本地加密</span>' +
-          '</div>' +
           '<a class="h-9 px-space-md rounded-full bg-surface-variant hover:bg-surface-hero text-cta-label font-label-md text-label-md flex items-center gap-space-xs shadow-[0_2px_8px_rgba(61,34,48,0.06)] active:scale-95 transition-all" href="transactions.html" title="去明细页记一笔">' +
             '<span class="text-[14px]">🌸</span><span>记一笔</span>' +
           '</a>' +
@@ -118,8 +115,7 @@
   }
   if (userLogout) {
     userLogout.addEventListener('click', function () {
-      window.JIANJI.logout();
-      location.href = 'login.html';
+      window.JIANJI.logout().then(function () { location.href = 'login.html'; });
     });
   }
 })();

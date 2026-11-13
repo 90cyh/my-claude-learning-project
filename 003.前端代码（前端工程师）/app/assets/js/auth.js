@@ -1,39 +1,45 @@
 /* ============================================================
-   简记 · 本地会话（PRD 5.9 本地账户的原型级落地）
-   说明：本工程为前端原型，不做真实凭证校验（密码哈希与锁定
-   逻辑在 002.网站开发 实现版中落地）。此处仅实现 PRD 5.9 的
-   路由规则与多账户隔离的演示：会话存于 localStorage。
+   简记 · 前端会话（PRD V1.0.2 云端账户）
+   会话由服务端 HttpOnly Cookie 管理（jj_session），
+   前端只向 /api/auth/* 询问状态，不再读写 localStorage 凭证
    ============================================================ */
-window.JIANJI = (function () {
-  'use strict';
-  var KEY = 'jianji.session';
+window.JIANJI = {
+  /* 会话状态：有效返回 {username}，无效返回 null */
+  async me() {
+    try {
+      const r = await fetch('/api/auth/me');
+      return r.ok ? await r.json() : null;
+    } catch (e) {
+      return null;
+    }
+  },
 
-  function getSession() {
-    try { return JSON.parse(localStorage.getItem(KEY) || 'null'); }
-    catch (e) { return null; }
-  }
-  function login(username) {
-    localStorage.setItem(KEY, JSON.stringify({
-      username: username,
-      loginAt: new Date().toISOString()
-    }));
-  }
-  function logout() { localStorage.removeItem(KEY); }
+  /* 登录：失败抛 Error（message 为服务端统一文案） */
+  async login(username, password) {
+    const r = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: username, password: password })
+    });
+    const data = await r.json().catch(function () { return {}; });
+    if (!r.ok) throw new Error(data.message || '登录失败');
+    return data;
+  },
 
-  /* PRD 5.9 登录规则 4：无会话 → 登录/注册页是唯一可见页面 */
-  function requireSession() {
-    if (!getSession()) { location.replace('login.html'); return false; }
-    return true;
+  /* 注册：失败抛 Error（409 用户名已存在 / 400 校验失败） */
+  async register(username, password) {
+    const r = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: username, password: password })
+    });
+    const data = await r.json().catch(function () { return {}; });
+    if (!r.ok) throw new Error(data.message || '注册失败');
+    return data;
+  },
+
+  /* 退出：服务端删除 session 表记录并清 Cookie */
+  async logout() {
+    try { await fetch('/api/auth/logout', { method: 'POST' }); } catch (e) { /* 忽略 */ }
   }
-  /* 已登录者访问登录/注册页时直接回首页 */
-  function redirectIfAuthed() {
-    if (getSession()) location.replace('index.html');
-  }
-  return {
-    getSession: getSession,
-    login: login,
-    logout: logout,
-    requireSession: requireSession,
-    redirectIfAuthed: redirectIfAuthed
-  };
-})();
+};

@@ -124,4 +124,30 @@
       }, 1200);
     });
   }
+
+  /* 记账键盘快速四则运算（PRD 偏好 arith，持久化于 user_setting；开启后输入 15+3.5 自动求和） */
+  function arithEnabled() {
+    try { return localStorage.getItem('jianji.pref.arith') === '1'; } catch (e) { return false; }
+  }
+  function evalExpr(raw) {
+    var s = String(raw || '').trim().replace(/[^0-9+\-*/().\s]/g, '');
+    if (!/[+\-*/]/.test(s)) return null;
+    try {
+      var v = Function('"use strict";return (' + s + ')')();
+      if (typeof v === 'number' && isFinite(v) && v >= 0) return Math.round(v * 100) / 100;
+    } catch (e) { /* 算式无效则不处理 */ }
+    return null;
+  }
+  ['drawerAmountInput', 'editAmountInput'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    function run() {
+      if (!arithEnabled()) return;
+      var v = evalExpr(el.value);
+      if (v !== null) el.value = v.toFixed(2);
+    }
+    el.addEventListener('change', run);
+    el.addEventListener('blur', run);
+    el.addEventListener('keydown', function (e) { if (e.key === 'Enter') run(); });
+  });
 })();
