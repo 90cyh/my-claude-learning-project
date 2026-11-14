@@ -30,6 +30,38 @@
 }
 
 /* ============================================================
+   表单控件焦点规范
+   去除浏览器默认的蓝色焦点框（Windows Chrome UA focus ring），
+   鼠标点击时无框、键盘 Tab 时给品牌粉焦点环（保留无障碍可达性）。
+   ============================================================ */
+input, select, textarea { outline: none; }
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid rgb(var(--brand));
+  outline-offset: 1px;
+  border-radius: 8px;
+}
+
+/* 聚焦时边框转品牌粉（与明细页「流水详情与快编」一致） */
+#record-sheet .field input:focus,
+#record-sheet .field select:focus,
+#record-sheet #amt:focus,
+#editAmountInput:focus,
+#editTitleInput:focus,
+#editCategorySelect:focus,
+#editAccountSelect:focus,
+#editDateInput:focus,
+#editTimeInput:focus,
+#editRemarkInput:focus,
+#drawerAmountInput:focus,
+#drawerTitleInput:focus,
+#drawerCategoryInput:focus {
+  border-color: rgb(var(--brand));
+}
+
+/* ============================================================
    记账弹窗（严格沿用 002 原静态页的设计规格）
    移动端 = 底部抽屉（Bottom Sheet），桌面端 = 居中对话框
    变量取 theme.css 的别名令牌（--brand / --btn-bg 等），
