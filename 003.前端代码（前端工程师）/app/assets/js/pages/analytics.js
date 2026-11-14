@@ -103,9 +103,13 @@
       text.textContent = Math.abs(d.deltaPct).toFixed(1) + '%';
     }
 
-    /* 卡2：总收入（V1.1 未开放） */
-    $('#kpi-income').textContent = d.totalIncome > 0 ? '¥' + fmt(d.totalIncome) : '—';
-    $('#kpi-income-tag').textContent = d.totalIncome > 0 ? '本期收入合计' : 'V1.1 即将开放';
+    /* 卡2：本月总收入（已接库，收入记账可用） */
+    $('#kpi-income').textContent = '¥' + fmt(d.totalIncome);
+    $('#kpi-income-tag').textContent = d.totalIncome > 0
+      ? '本期收入合计'
+      : '本月暂无收入记录';
+    $('#kpi-income').className = 'font-headline-lg text-headline-lg tracking-tight ' +
+      (d.totalIncome > 0 ? 'text-flow-income' : 'text-text-muted');
 
     /* 卡3：日均支出 */
     $('#kpi-daily').textContent = '¥' + fmt(d.dailyAvg);
