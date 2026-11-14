@@ -196,6 +196,23 @@
         }).join('');
       }
     }
+
+    renderTip(d);
+  }
+
+  /* ---------- 理财小贴士（动态：剩余天数 + 日均可用额度） ---------- */
+  function renderTip(d) {
+    var el = document.getElementById('tip-text');
+    if (!el) return;
+    var now = new Date();
+    var daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    var remainDays = Math.max(daysInMonth - now.getDate() + 1, 0);   /* 含今天 */
+    /* 未设置预算时默认 100 元（用户口径） */
+    var budgetAmount = d.budget.set ? d.budget.amount : 100;
+    var remain = budgetAmount - d.monthExpense;
+    var daily = remainDays > 0 ? remain / remainDays : 0;
+    if (daily < 0) daily = 0;
+    el.textContent = '本月还剩 ' + remainDays + ' 天，日均预算建议保持在 ¥' + daily.toFixed(2) + ' 以内哦。';
   }
 
   /* 记账弹窗保存成功后刷新首页卡片 */

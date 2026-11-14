@@ -127,57 +127,10 @@
                 <span class="w-2 h-4 rounded-full bg-secondary"></span>
                 <h4 class="font-label-md text-label-md text-text-primary">本月支出 Top 3</h4>
               </div>
-              <span class="font-caption text-caption text-text-muted">占总额 78%</span>
+              <span class="font-caption text-caption text-text-muted" id="top3-total">占总额 —</span>
             </div>
-            <div class="flex flex-col gap-space-sm">
-              <!-- Rank 1: Dining -->
-              <div class="flex flex-col gap-space-2xs">
-                <div class="flex items-center justify-between font-caption text-caption">
-                  <div class="flex items-center gap-space-xs">
-                    <span class="w-4 h-4 rounded-full bg-cat-dining/20 text-cat-dining font-bold text-[10px] flex items-center justify-center">1</span>
-                    <span class="font-label-sm text-label-sm text-text-primary">餐饮美食</span>
-                  </div>
-                  <div class="flex items-center gap-space-xs">
-                    <span class="font-label-sm text-label-sm text-text-primary font-medium">¥1,420.00</span>
-                    <span class="text-text-muted">41.5%</span>
-                  </div>
-                </div>
-                <div class="w-full h-1.5 rounded-full bg-track-unfilled overflow-hidden">
-                  <div class="h-full rounded-full bg-cat-dining" style="width: 41.5%;"></div>
-                </div>
-              </div>
-              <!-- Rank 2: Housing -->
-              <div class="flex flex-col gap-space-2xs">
-                <div class="flex items-center justify-between font-caption text-caption">
-                  <div class="flex items-center gap-space-xs">
-                    <span class="w-4 h-4 rounded-full bg-cat-housing/20 text-cat-housing font-bold text-[10px] flex items-center justify-center">2</span>
-                    <span class="font-label-sm text-label-sm text-text-primary">居住水电</span>
-                  </div>
-                  <div class="flex items-center gap-space-xs">
-                    <span class="font-label-sm text-label-sm text-text-primary font-medium">¥850.00</span>
-                    <span class="text-text-muted">24.8%</span>
-                  </div>
-                </div>
-                <div class="w-full h-1.5 rounded-full bg-track-unfilled overflow-hidden">
-                  <div class="h-full rounded-full bg-cat-housing" style="width: 24.8%;"></div>
-                </div>
-              </div>
-              <!-- Rank 3: Shopping -->
-              <div class="flex flex-col gap-space-2xs">
-                <div class="flex items-center justify-between font-caption text-caption">
-                  <div class="flex items-center gap-space-xs">
-                    <span class="w-4 h-4 rounded-full bg-cat-shopping/20 text-cat-shopping font-bold text-[10px] flex items-center justify-center">3</span>
-                    <span class="font-label-sm text-label-sm text-text-primary">日常购物</span>
-                  </div>
-                  <div class="flex items-center gap-space-xs">
-                    <span class="font-label-sm text-label-sm text-text-primary font-medium">¥410.50</span>
-                    <span class="text-text-muted">12.0%</span>
-                  </div>
-                </div>
-                <div class="w-full h-1.5 rounded-full bg-track-unfilled overflow-hidden">
-                  <div class="h-full rounded-full bg-cat-shopping" style="width: 12%;"></div>
-                </div>
-              </div>
+            <div class="flex flex-col gap-space-sm" id="top3-list">
+              <!-- top3 list rendered by dashboard.js -->
             </div>
             <div class="pt-space-xs flex items-center justify-between border-t border-hairline font-caption text-caption text-text-secondary">
               <span>环比上月结构对比</span>
@@ -194,7 +147,7 @@
             </div>
             <div class="flex flex-col">
               <span class="font-label-sm text-label-sm text-text-primary">理财小贴士</span>
-              <span class="font-caption text-caption text-text-secondary">本月还剩 25 天，日均预算建议保持在 ¥23.20 以内哦。</span>
+              <span class="font-caption text-caption text-text-secondary" id="tip-text">正在计算本月预算建议…</span>
             </div>
           </div>
         </div>
