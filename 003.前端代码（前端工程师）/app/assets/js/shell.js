@@ -50,9 +50,9 @@
           '</a>' +
         '</div>' +
         '<div class="flex items-center gap-space-sm">' +
-          '<a class="h-9 px-space-md rounded-full bg-surface-variant hover:bg-surface-hero text-cta-label font-label-md text-label-md flex items-center gap-space-xs shadow-[0_2px_8px_rgba(61,34,48,0.06)] active:scale-95 transition-all" href="record.html" title="记一笔（支出 / 收入）">' +
+          '<button class="h-9 px-space-md rounded-full bg-surface-variant hover:bg-surface-hero text-cta-label font-label-md text-label-md flex items-center gap-space-xs shadow-[0_2px_8px_rgba(61,34,48,0.06)] active:scale-95 transition-all" data-record-open title="记一笔（支出 / 收入）" type="button">' +
             '<span class="text-[14px]">🌸</span><span>记一笔</span>' +
-          '</a>' +
+          '</button>' +
           '<div class="relative" id="site-user-menu">' +
             '<button class="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:scale-105 active:scale-95 transition-transform" id="site-user-btn" title="我的" aria-haspopup="true" aria-expanded="false">' +
               '<span class="material-symbols-outlined text-on-primary text-[18px]">person</span>' +
@@ -89,6 +89,12 @@
 
   document.body.insertAdjacentHTML('afterbegin', headerHTML);
   document.body.insertAdjacentHTML('beforeend', bottomNavHTML);
+
+  /* ---------- 记一笔弹窗：全站唤起入口 ---------- */
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-record-open]');
+    if (btn) { e.preventDefault(); window.JIANJIRECORD.open(); }
+  });
 
   /* ---------- 头像菜单：我的 / 退出登录（PRD 5.9） ---------- */
   var userBtn = document.getElementById('site-user-btn');

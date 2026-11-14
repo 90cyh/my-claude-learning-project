@@ -103,6 +103,9 @@
     });
   }
 
+  /* 记账弹窗保存成功后刷新列表 */
+  window.addEventListener('jianji:txn-changed', function () { loadList(); });
+
   /* ---------- 拉取明细 ---------- */
   function loadList() {
     var url = '/api/transaction/list?month=' + encodeURIComponent(state.month) +
@@ -385,13 +388,13 @@
       loadMonths();
     });
 
-    /* 导出 / 记一笔（统一走记一笔副页，支持支出与收入） */
+    /* 导出 / 记一笔（统一走全站记账弹窗，支持支出与收入） */
     $('#exportBtn').addEventListener('click', exportCSV);
     $('#quickAddBtn').addEventListener('click', function () {
-      location.href = 'record.html';
+      window.JIANJIRECORD.open();
     });
     $('#mobileAddFab').addEventListener('click', function () {
-      location.href = 'record.html';
+      window.JIANJIRECORD.open();
     });
 
     /* 筛选胶囊：全部类型 / 支出 / 收入 */

@@ -266,6 +266,9 @@
     el.innerHTML = txt;
   }
 
+  /* 记账弹窗保存成功后刷新统计 */
+  window.addEventListener('jianji:txn-changed', function () { load(); });
+
   /* ---------- 月份下拉 ---------- */
   function renderMonthMenu(months, current) {
     var menu = $('#st-month-menu');

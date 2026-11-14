@@ -198,6 +198,9 @@
     }
   }
 
+  /* 记账弹窗保存成功后刷新首页卡片 */
+  window.addEventListener('jianji:txn-changed', function () { load(); });
+
   /* ---------- ④ 拉取汇总 ---------- */
   function load() {
     fetch('/api/home/summary')
