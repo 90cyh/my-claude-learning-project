@@ -30,35 +30,26 @@
 }
 
 /* ============================================================
-   表单控件焦点规范
-   去除浏览器默认的蓝色焦点框（Windows Chrome UA focus ring），
-   鼠标点击时无框、键盘 Tab 时给品牌粉焦点环（保留无障碍可达性）。
+   表单控件焦点规范（与登录页完全一致：粉色边框 + 粉色柔光）
+   去除浏览器默认的蓝色焦点框（Windows Chrome UA focus ring）。
+   用 !important 压过 Tailwind 工具类（其样式在运行时后注入）。
    ============================================================ */
 input, select, textarea { outline: none; }
 
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible {
-  outline: 2px solid rgb(var(--brand));
-  outline-offset: 1px;
-  border-radius: 8px;
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none !important;
+  border-color: rgb(var(--c-secondary)) !important;
+  box-shadow: 0 0 0 4px rgb(var(--c-secondary) / .15) !important;
 }
 
-/* 聚焦时边框转品牌粉（与明细页「流水详情与快编」一致） */
-#record-sheet .field input:focus,
-#record-sheet .field select:focus,
-#record-sheet #amt:focus,
+/* 金额输入为下划线式，聚焦时只把底线转为品牌粉，不加外圈柔光 */
+#amt:focus,
 #editAmountInput:focus,
-#editTitleInput:focus,
-#editCategorySelect:focus,
-#editAccountSelect:focus,
-#editDateInput:focus,
-#editTimeInput:focus,
-#editRemarkInput:focus,
-#drawerAmountInput:focus,
-#drawerTitleInput:focus,
-#drawerCategoryInput:focus {
-  border-color: rgb(var(--brand));
+#drawerAmountInput:focus {
+  border-color: rgb(var(--brand)) !important;
+  box-shadow: none !important;
 }
 
 /* ============================================================
