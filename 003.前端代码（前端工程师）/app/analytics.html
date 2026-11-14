@@ -23,17 +23,22 @@
       <!-- Top Month Switch & Export Toolbar -->
       <div class="flex flex-col sm:flex-row items-center justify-between gap-space-md bg-surface p-space-md rounded-xl shadow-sm">
         <!-- Natural Month Carousel -->
+        <div class="relative">
         <div class="flex items-center gap-space-sm bg-surface-container-low px-space-md py-space-xs rounded-full">
-          <button aria-label="上个月" class="w-7 h-7 rounded-full flex items-center justify-center text-text-secondary hover:bg-surface-hero hover:text-primary transition-colors" type="button">
+          <button aria-label="上个月" class="w-7 h-7 rounded-full flex items-center justify-center text-text-secondary hover:bg-surface-hero hover:text-primary transition-colors" id="st-prev" type="button">
             <span class="material-symbols-outlined text-[18px]">chevron_left</span>
           </button>
-          <div class="flex items-center gap-space-xs px-space-xs">
-            <span class="font-headline-md text-headline-md text-text-primary tracking-tight">2026年11月</span>
-            <span class="font-label-sm text-label-sm px-space-xs py-space-2xs rounded-full bg-surface-hero text-tertiary font-semibold">(已结账5天)</span>
+          <div class="flex items-center gap-space-xs px-space-xs cursor-pointer group" id="st-toggle">
+            <span class="font-headline-md text-headline-md text-text-primary tracking-tight" id="st-month-label">2026年11月</span>
+            <span class="font-label-sm text-label-sm px-space-xs py-space-2xs rounded-full bg-surface-hero text-tertiary font-semibold" id="st-days-tag">(已结账5天)</span>
+            <span class="material-symbols-outlined text-text-muted text-[16px] group-hover:translate-y-0.5 transition-transform">expand_more</span>
           </div>
-          <button aria-label="下个月" class="w-7 h-7 rounded-full flex items-center justify-center text-text-secondary hover:bg-surface-hero hover:text-primary transition-colors" type="button">
+          <button aria-label="下个月" class="w-7 h-7 rounded-full flex items-center justify-center text-text-secondary hover:bg-surface-hero hover:text-primary transition-colors" id="st-next" type="button">
             <span class="material-symbols-outlined text-[18px]">chevron_right</span>
           </button>
+        </div>
+        <!-- 月份下拉（复用明细页下拉样式） -->
+        <div class="hidden absolute left-0 top-12 w-44 max-h-80 overflow-y-auto bg-surface border border-border-hairline rounded-[14px] shadow-[0_12px_32px_-4px_rgba(61,34,48,0.12)] py-space-xs z-50" id="st-month-menu"></div>
         </div>
         <!-- Export Action -->
         <div class="flex items-center gap-space-xs w-full sm:w-auto justify-end">
@@ -54,10 +59,10 @@
             </span>
           </div>
           <div class="mt-space-md">
-            <div class="font-headline-lg text-headline-lg text-text-primary tracking-tight">¥3,420.50</div>
+            <div class="font-headline-lg text-headline-lg text-text-primary tracking-tight" id="kpi-expense">¥0.00</div>
             <div class="mt-space-xs flex items-center gap-space-2xs">
-              <span class="inline-flex items-center text-status-danger font-label-sm text-label-sm font-semibold">
-                <span class="material-symbols-outlined text-[14px]">arrow_upward</span>12.0%
+              <span class="inline-flex items-center font-label-sm text-label-sm font-semibold" id="kpi-delta">
+                <span class="material-symbols-outlined text-[14px]" id="kpi-delta-icon">arrow_upward</span><span id="kpi-delta-text">—</span>
               </span>
               <span class="font-caption text-caption text-text-muted">较上月同期</span>
             </div>
@@ -73,9 +78,9 @@
             </span>
           </div>
           <div class="mt-space-md">
-            <div class="font-headline-lg text-headline-lg text-text-muted tracking-tight">—</div>
+            <div class="font-headline-lg text-headline-lg text-text-muted tracking-tight" id="kpi-income">—</div>
             <div class="mt-space-xs flex items-center gap-space-2xs">
-              <span class="px-space-xs py-space-2xs rounded-full bg-surface-container font-caption text-caption text-text-secondary font-medium">V1.1 即将开放</span>
+              <span class="px-space-xs py-space-2xs rounded-full bg-surface-container font-caption text-caption text-text-secondary font-medium" id="kpi-income-tag">V1.1 即将开放</span>
             </div>
           </div>
         </div>
@@ -88,9 +93,9 @@
             </span>
           </div>
           <div class="mt-space-md">
-            <div class="font-headline-lg text-headline-lg text-text-primary tracking-tight">¥684.10</div>
+            <div class="font-headline-lg text-headline-lg text-text-primary tracking-tight" id="kpi-daily">¥0.00</div>
             <div class="mt-space-xs flex items-center gap-space-2xs">
-              <span class="font-caption text-caption text-text-muted">基于已记录 5 天折算</span>
+              <span class="font-caption text-caption text-text-muted" id="kpi-daily-tag">基于已记录 5 天折算</span>
             </div>
           </div>
         </div>
@@ -104,12 +109,12 @@
           </div>
           <div class="mt-space-md">
             <div class="flex items-baseline justify-between">
-              <span class="font-headline-lg text-headline-lg text-text-primary tracking-tight">¥579.50</span>
-              <span class="font-label-sm text-label-sm text-status-warning font-semibold">85.5% 消耗</span>
+              <span class="font-headline-lg text-headline-lg text-text-primary tracking-tight" id="kpi-budget">—</span>
+              <span class="font-label-sm text-label-sm font-semibold" id="kpi-budget-pct">未设置预算</span>
             </div>
-            <!-- Budget Progress Track (Warning state 85.5% -> #e06a2a) -->
+            <!-- Budget Progress Track（颜色随四档状态切换，PRD 6.3.3） -->
             <div class="w-full bg-track-unfilled h-1.5 rounded-full mt-space-xs overflow-hidden">
-              <div class="bg-status-warning h-full rounded-full transition-all duration-500" style="width: 85.5%;"></div>
+              <div class="h-full rounded-full transition-all duration-500" id="kpi-budget-bar" style="width: 0%;"></div>
             </div>
           </div>
         </div>
@@ -121,14 +126,14 @@
           <div class="flex items-center justify-between pb-space-sm">
             <div>
               <h2 class="font-headline-md text-headline-md text-text-primary">分类支出占比</h2>
-              <p class="font-caption text-caption text-text-muted mt-space-2xs">6大类别开销分布 · 餐饮居首位</p>
+              <p class="font-caption text-caption text-text-muted mt-space-2xs" id="donut-subtitle">—</p>
             </div>
-            <span class="px-space-sm py-space-2xs rounded-full bg-surface-hero font-label-sm text-label-sm text-primary font-medium">共 6 项</span>
+            <span class="px-space-sm py-space-2xs rounded-full bg-surface-hero font-label-sm text-label-sm text-primary font-medium" id="donut-count">共 0 项</span>
           </div>
           <div class="flex flex-col md:flex-row items-center gap-space-lg my-space-md">
             <!-- Donut SVG Diagram -->
             <div class="relative w-44 h-44 shrink-0 flex items-center justify-center">
-              <svg class="w-full h-full -rotate-90" viewBox="0 0 100 100">
+              <svg class="w-full h-full -rotate-90" id="donut-svg" viewBox="0 0 100 100">
                 <circle cx="50" cy="50" fill="none" r="38" stroke="#f6e7ee" stroke-width="13"></circle>
                 <!-- Other: 3.1% -->
                 <circle class="transition-all hover:opacity-80" cx="50" cy="50" fill="none" r="38" stroke="#9d8392" stroke-dasharray="7.4 231.36" stroke-dashoffset="-231.36" stroke-width="13"></circle>
@@ -144,13 +149,13 @@
                 <circle class="transition-all hover:opacity-80" cx="50" cy="50" fill="none" r="38" stroke="#e8752e" stroke-dasharray="92.86 145.9" stroke-dashoffset="0" stroke-width="13"></circle>
               </svg>
               <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
-                <span class="font-caption text-caption text-text-secondary">最大项餐饮</span>
-                <span class="font-headline-md text-headline-md text-text-primary tracking-tight font-bold">37.9%</span>
-                <span class="font-caption text-caption text-cat-dining font-medium">¥1,296.00</span>
+                <span class="font-caption text-caption text-text-secondary" id="donut-center-label">—</span>
+                <span class="font-headline-md text-headline-md text-text-primary tracking-tight font-bold" id="donut-center-pct">—</span>
+                <span class="font-caption text-caption font-medium" id="donut-center-amount">—</span>
               </div>
             </div>
             <!-- Fallback Descending Text Breakdown List -->
-            <div class="flex-1 w-full flex flex-col gap-space-xs">
+            <div class="flex-1 w-full flex flex-col gap-space-xs" id="donut-legend">
               <a class="h-10 px-space-sm rounded-lg hover:bg-surface-hero transition-colors flex items-center justify-between" href="transactions.html">
                 <div class="flex items-center gap-space-sm">
                   <span class="w-6 h-6 rounded bg-cat-dining/15 text-cat-dining flex items-center justify-center">
@@ -234,18 +239,22 @@
         <section class="lg:col-span-6 bg-surface p-space-lg md:p-space-xl rounded-xl shadow-sm flex flex-col justify-between">
           <div class="flex items-center justify-between pb-space-sm">
             <div>
-              <h2 class="font-headline-md text-headline-md text-text-primary">近 6 个月支出趋势</h2>
-              <p class="font-caption text-caption text-text-muted mt-space-2xs">半年均值 ¥3,115.67 · 本月相对偏高 +9.7%</p>
+              <h2 class="font-headline-md text-headline-md text-text-primary" id="trend-title">近 6 个月支出趋势</h2>
+              <p class="font-caption text-caption text-text-muted mt-space-2xs" id="trend-subtitle">—</p>
             </div>
             <div class="flex items-center gap-space-xs font-caption text-caption">
               <span class="inline-block w-2.5 h-2.5 rounded-full bg-primary"></span>
               <span class="text-text-secondary">实付支出</span>
               <span class="inline-block w-4 h-0.5 bg-outline-variant ml-space-xs"></span>
               <span class="text-text-muted">均值基准线</span>
+              <div class="seg ml-space-sm" id="trend-seg">
+                <button class="on" data-mode="month">按月</button>
+                <button data-mode="week">按周</button>
+              </div>
             </div>
           </div>
           <!-- Custom SVG Chart Canvas with Columns & Baseline -->
-          <div class="w-full relative mt-space-md">
+          <div class="w-full relative mt-space-md" id="trend-chart">
             <div class="w-full h-56 flex flex-col justify-end relative">
               <!-- Reference Mean Line Overwrite -->
               <div class="absolute left-0 right-0 top-[35%] z-10 flex items-center pointer-events-none">
@@ -310,8 +319,8 @@
               <span class="font-label-md text-label-md text-text-primary">开销洞察建议</span>
               <span class="font-caption text-caption px-space-xs py-space-2xs rounded-full bg-surface text-primary">贴心管家</span>
             </div>
-            <p class="font-body-md text-body-md text-text-secondary mt-space-2xs">
-              小提示：本月餐饮占比达到 <strong class="text-primary font-semibold">37.9%</strong>，外卖开销集中，后半月可适当控制哦 🌸
+            <p class="font-body-md text-body-md text-text-secondary mt-space-2xs" id="insight-text">
+              小提示：记几笔账，就能看到你的开销结构啦 🌸
             </p>
           </div>
         </div>

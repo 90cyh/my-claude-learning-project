@@ -697,6 +697,132 @@ app.get('/api/transaction/export', async (req, res) => {
   }
 });
 
+/* ---------- 统计页（PRD 5.4：月度总览 / 分类占比 / 月度趋势） ---------- */
+app.get('/api/stats/summary', async (req, res) => {
+  const user = await currentUser(req);
+  if (!user) return res.status(401).json({ message: '未登录' });
+  try {
+    const pad = (n) => String(n).padStart(2, '0');
+    const now = new Date();
+    const y = now.getFullYear(), m = now.getMonth();
+    const mk = /^\d{4}-\d{2}$/.test(req.query.month || '')
+      ? req.query.month
+      : y + '-' + pad(m + 1);
+    const [py, pm] = mk.split('-').map(Number);
+    const monthStart = mk + '-01';
+    const nextStart = new Date(py, pm, 1);
+    const nextStr = nextStart.getFullYear() + '-' + pad(nextStart.getMonth() + 1) + '-01';
+    const daysInMonth = new Date(py, pm, 0).getDate();
+    const isCurrent = mk === y + '-' + pad(m + 1);
+    const elapsed = isCurrent ? now.getDate() : daysInMonth;
+    /* 上月同期：上月 1 日 ~ 上月同号日 */
+    const prevMonthDate = new Date(py, pm - 2, 1);
+    const prevMk = prevMonthDate.getFullYear() + '-' + pad(prevMonthDate.getMonth() + 1);
+    const prevDays = new Date(prevMonthDate.getFullYear(), prevMonthDate.getMonth() + 1, 0).getDate();
+    const prevStart = prevMk + '-01';
+    const prevEnd = prevMk + '-' + pad(Math.min(now.getDate(), prevDays));
+
+    const [cur] = await pool.query(
+      `SELECT COALESCE(SUM(amount),0) AS s, COUNT(*) AS c FROM transaction
+        WHERE user_id = ? AND type = 'expense' AND date >= ? AND date < ?`, [user.id, monthStart, nextStr]);
+    const [inc] = await pool.query(
+      `SELECT COALESCE(SUM(amount),0) AS s FROM transaction
+        WHERE user_id = ? AND type = 'income' AND date >= ? AND date < ?`, [user.id, monthStart, nextStr]);
+    const [prev] = await pool.query(
+      `SELECT COALESCE(SUM(amount),0) AS s FROM transaction
+        WHERE user_id = ? AND type = 'expense' AND date >= ? AND date <= ?`, [user.id, prevStart, prevEnd]);
+
+    /* 分类占比（Top5 + 其他，PRD 5.4 视图 2 / 6.3.6 色数上限） */
+    const [catRows] = await pool.query(
+      `SELECT c.id, c.name, c.icon, c.color, SUM(t.amount) AS s
+         FROM transaction t JOIN category c ON c.id = t.category_id
+        WHERE t.user_id = ? AND t.type = 'expense' AND t.date >= ? AND t.date < ?
+        GROUP BY c.id, c.name, c.icon, c.color ORDER BY s DESC`, [user.id, monthStart, nextStr]);
+    const totalExpense = Number(cur[0].s);
+    let categories = catRows.map(function (r) {
+      return {
+        id: r.id, name: r.name, icon: r.icon, color: r.color, amount: Number(r.s),
+        pct: totalExpense > 0 ? +(Number(r.s) / totalExpense * 100).toFixed(1) : 0
+      };
+    });
+    if (categories.length > 5) {
+      const rest = categories.slice(5);
+      categories = categories.slice(0, 5).concat([{
+        id: 'other', name: '其他', icon: '📌', color: '#9d8392',
+        amount: +rest.reduce(function (s, x) { return s + x.amount; }, 0).toFixed(2),
+        pct: totalExpense > 0 ? +(rest.reduce(function (s, x) { return s + x.amount; }, 0) / totalExpense * 100).toFixed(1) : 0,
+        merged: rest.length
+      }]);
+    }
+
+    /* 近 6 个月趋势 */
+    const months = [];
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(py, pm - 1 - i, 1);
+      const k = d.getFullYear() + '-' + pad(d.getMonth() + 1);
+      const s = new Date(d.getFullYear(), d.getMonth() + 1, 1);
+      const se = s.getFullYear() + '-' + pad(s.getMonth() + 1) + '-01';
+      const [rows] = await pool.query(
+        `SELECT COALESCE(SUM(amount),0) AS s FROM transaction
+          WHERE user_id = ? AND type = 'expense' AND date >= ? AND date < ?`, [user.id, k + '-01', se]);
+      months.push({ mk: k, label: (+k.slice(5)) + '月', value: Number(rows[0].s), current: k === mk });
+    }
+
+    /* 近 12 周趋势（周一起算） */
+    const weeks = [];
+    const ws = new Date(now);
+    ws.setDate(ws.getDate() - ((ws.getDay() + 6) % 7));
+    for (let i = 11; i >= 0; i--) {
+      const s = new Date(ws); s.setDate(ws.getDate() - 7 * i);
+      const e = new Date(s); e.setDate(s.getDate() + 7);
+      const ds = s.getFullYear() + '-' + pad(s.getMonth() + 1) + '-' + pad(s.getDate());
+      const de = e.getFullYear() + '-' + pad(e.getMonth() + 1) + '-' + pad(e.getDate());
+      const [rows] = await pool.query(
+        `SELECT COALESCE(SUM(amount),0) AS s FROM transaction
+          WHERE user_id = ? AND type = 'expense' AND date >= ? AND date < ?`, [user.id, ds, de]);
+      weeks.push({
+        label: (+ds.slice(5, 7)) + '/' + (+ds.slice(8, 10)),
+        value: Number(rows[0].s),
+        current: i === 0
+      });
+    }
+
+    /* 总预算 */
+    const [budgetRows] = await pool.query(
+      'SELECT amount FROM budget WHERE user_id = ? AND category_id IS NULL LIMIT 1', [user.id]);
+
+    const prevExpense = Number(prev[0].s);
+    const deltaPct = prevExpense > 0
+      ? +((totalExpense - prevExpense) / prevExpense * 100).toFixed(1) : null;
+
+    res.json({
+      month: mk,
+      monthCN: py + '年' + pm + '月',
+      elapsedDays: elapsed,
+      isCurrentMonth: isCurrent,
+      totalExpense: totalExpense,
+      totalIncome: Number(inc[0].s),
+      txnCount: cur[0].c,
+      dailyAvg: elapsed > 0 ? +(totalExpense / elapsed).toFixed(2) : 0,
+      prevSamePeriodExpense: prevExpense,
+      deltaPct: deltaPct,
+      categories: categories,
+      trendMonths: months,
+      trendWeeks: weeks,
+      budget: budgetRows.length
+        ? {
+            set: true, amount: Number(budgetRows[0].amount), used: totalExpense,
+            usedPct: Number(budgetRows[0].amount) > 0 ? +(totalExpense / Number(budgetRows[0].amount) * 100).toFixed(1) : 0,
+            remaining: +(Number(budgetRows[0].amount) - totalExpense).toFixed(2)
+          }
+        : { set: false }
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: '服务器错误，请稍后再试' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`简记后端已启动：http://localhost:${PORT}（登录页 /login.html）`);
 });
