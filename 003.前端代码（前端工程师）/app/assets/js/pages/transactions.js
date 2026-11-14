@@ -66,24 +66,12 @@
     return '星期' + '日一二三四五六'[d.getDay()];
   }
 
-  /* 分类图标与配色（沿用原静态页的 Material Symbols 图标 + 分类色） */
-  var CAT_STYLE = {
-    '餐饮': { sym: 'restaurant', cls: 'bg-cat-dining/15 text-cat-dining' },
-    '交通': { sym: 'directions_bus', cls: 'bg-cat-transport/15 text-cat-transport' },
-    '购物': { sym: 'shopping_bag', cls: 'bg-cat-shopping/15 text-cat-shopping' },
-    '居住': { sym: 'home', cls: 'bg-cat-housing/15 text-cat-housing' },
-    '娱乐': { sym: 'theater_comedy', cls: 'bg-cat-entertainment/15 text-cat-entertainment' },
-    '医疗': { sym: 'medical_services', cls: 'bg-cat-medical/15 text-cat-medical' },
-    '教育': { sym: 'menu_book', cls: 'bg-cat-edu/15 text-cat-edu' },
-    '人情': { sym: 'card_giftcard', cls: 'bg-cat-social/15 text-cat-social' },
-    '其他': { sym: 'category', cls: 'bg-cat-other/15 text-cat-other' },
-    '工资': { sym: 'payments', cls: 'bg-cat-housing/15 text-cat-housing' },
-    '奖金': { sym: 'emoji_events', cls: 'bg-cat-social/15 text-cat-social' },
-    '理财收益': { sym: 'trending_up', cls: 'bg-cat-transport/15 text-cat-transport' },
-    '退款': { sym: 'undo', cls: 'bg-cat-edu/15 text-cat-edu' }
-  };
+  /* 分类图标与配色（共享模块 assets/js/categories.js） */
   function catStyle(name) {
-    return CAT_STYLE[name] || { sym: 'category', cls: 'bg-cat-other/15 text-cat-other' };
+    return {
+      sym: window.JIANCAT.sym(name),
+      cls: window.JIANCAT.cls(name)
+    };
   }
 
   /* ---------- 加载元数据（分类 / 账户 / 后端当前日期时刻） ---------- */
@@ -397,16 +385,13 @@
       loadMonths();
     });
 
-    /* 导出 / 记一笔 */
+    /* 导出 / 记一笔（统一走记一笔副页，支持支出与收入） */
     $('#exportBtn').addEventListener('click', exportCSV);
     $('#quickAddBtn').addEventListener('click', function () {
-      fillForm(null);
-      if (window.innerWidth < 1024) openDrawer();
-      else $('#editAmountInput').focus();
+      location.href = 'record.html';
     });
     $('#mobileAddFab').addEventListener('click', function () {
-      fillForm(null);
-      openDrawer();
+      location.href = 'record.html';
     });
 
     /* 筛选胶囊：全部类型 / 支出 / 收入 */

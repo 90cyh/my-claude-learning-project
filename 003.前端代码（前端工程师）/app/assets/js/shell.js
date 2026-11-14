@@ -50,7 +50,7 @@
           '</a>' +
         '</div>' +
         '<div class="flex items-center gap-space-sm">' +
-          '<a class="h-9 px-space-md rounded-full bg-surface-variant hover:bg-surface-hero text-cta-label font-label-md text-label-md flex items-center gap-space-xs shadow-[0_2px_8px_rgba(61,34,48,0.06)] active:scale-95 transition-all" href="transactions.html" title="去明细页记一笔">' +
+          '<a class="h-9 px-space-md rounded-full bg-surface-variant hover:bg-surface-hero text-cta-label font-label-md text-label-md flex items-center gap-space-xs shadow-[0_2px_8px_rgba(61,34,48,0.06)] active:scale-95 transition-all" href="record.html" title="记一笔（支出 / 收入）">' +
             '<span class="text-[14px]">🌸</span><span>记一笔</span>' +
           '</a>' +
           '<div class="relative" id="site-user-menu">' +
