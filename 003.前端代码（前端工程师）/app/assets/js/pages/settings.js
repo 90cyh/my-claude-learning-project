@@ -82,6 +82,28 @@
   }
 
   /* ---------- ④ 资金账户：列表渲染 + 新增（数据库） ---------- */
+  /* 预置账户图标沿用原静态页的 Material Symbols 线性图标与配色 */
+  var ACCOUNT_ICONS = {
+    'chat':        { symbol: 'chat',        cls: 'bg-status-safe/15 text-status-safe' },
+    'payments':    { symbol: 'payments',    cls: 'bg-cat-transport/15 text-cat-transport' },
+    'toll':        { symbol: 'toll',        cls: 'bg-cat-social/15 text-cat-social' },
+    'credit_card': { symbol: 'credit_card', cls: 'bg-primary/15 text-primary' }
+  };
+  /* 按账户名兜底（兼容库中存量为 emoji 的历史数据） */
+  var ACCOUNT_NAME_ICONS = {
+    '微信': 'chat', '微信支付': 'chat', '支付宝': 'payments', '现金': 'toll',
+    '随身现金': 'toll', '银行卡': 'credit_card', '招商银行储蓄卡': 'credit_card'
+  };
+  function accountIcon(a) {
+    var key = ACCOUNT_NAME_ICONS[a.name] || a.icon;
+    var conf = ACCOUNT_ICONS[key];
+    if (conf) {
+      return '<div class="w-10 h-10 rounded-full ' + conf.cls + ' flex items-center justify-center">' +
+        '<span class="material-symbols-outlined text-[20px]">' + conf.symbol + '</span></div>';
+    }
+    return '<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-[18px]">' + esc(a.icon) + '</div>';
+  }
+
   function renderAccounts(d) {
     setText('account-count', d.accounts.length + ' 个活跃账户');
     setText('total-balance', '¥ ' + fmt(d.totalBalance));
@@ -91,12 +113,14 @@
         return '<div class="p-space-md rounded-[14px] bg-surface-container-low/80 hover:bg-surface-hero transition-colors flex flex-col justify-between gap-space-md group">' +
           '<div class="flex items-start justify-between">' +
             '<div class="flex items-center gap-space-sm">' +
-              '<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-[18px]">' + esc(a.icon) + '</div>' +
+              accountIcon(a) +
               '<div class="flex flex-col">' +
                 '<span class="font-label-md text-label-md text-text-primary">' + esc(a.name) + '</span>' +
               '</div>' +
             '</div>' +
-            '<span class="material-symbols-outlined text-[18px] text-text-muted">savings</span>' +
+            '<button class="w-7 h-7 rounded-full flex items-center justify-center text-text-muted hover:text-status-danger hover:bg-surface transition-colors" title="删除该资金账户" data-del-account="' + a.id + '">' +
+              '<span class="material-symbols-outlined text-[16px]">delete</span>' +
+            '</button>' +
           '</div>' +
           '<div class="flex items-baseline justify-between pt-space-xs border-t border-border-hairline">' +
             '<span class="font-caption text-caption text-text-muted">可用余额</span>' +
@@ -105,6 +129,29 @@
         '</div>';
       }).join('') : '<div class="py-space-md text-center font-caption text-caption text-text-muted">还没有资金账户，点击上方「新增资金账户」创建 🌸</div>';
     }
+    bindAccountDelete();
+  }
+
+  /* 删除资金账户（PRD 5.7 规则4）：确认后删除，其下流水转为「未分配」 */
+  function bindAccountDelete() {
+    document.querySelectorAll('[data-del-account]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = btn.getAttribute('data-del-account');
+        var nameEl = btn.closest('div').parentElement.querySelector('span.font-label-md');
+        var name = nameEl ? nameEl.textContent : '该账户';
+        if (!window.confirm('确定删除资金账户「' + name + '」吗？\n\n其下已记录的流水不会丢失，将转为「未分配」。')) return;
+        fetch('/api/account/' + id, { method: 'DELETE' })
+          .then(function (r) {
+            if (!r.ok) return r.json().then(function (d) { throw new Error(d.message || '删除失败'); });
+            return r.json();
+          })
+          .then(function (d) {
+            showToast('账户已删除' + (d.txnsUnassigned ? '，' + d.txnsUnassigned + ' 笔流水转为未分配' : ''), 'delete');
+            load();
+          })
+          .catch(function (err) { showToast(err.message || '删除失败，请稍后再试', 'error'); });
+      });
+    });
   }
 
   var addWalletBtn = document.getElementById('add-wallet-btn');
@@ -117,7 +164,7 @@
       fetch('/api/account', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name.trim(), icon: '💳', initial_balance: bal })
+        body: JSON.stringify({ name: name.trim(), icon: 'credit_card', initial_balance: bal })
       }).then(function (r) {
         if (!r.ok) return r.json().then(function (d) { throw new Error(d.message || '创建失败'); });
         showToast('资金账户已添加 🌸', 'account_balance_wallet');

@@ -80,7 +80,9 @@ tailwind.config = {
         'flow-income': 'rgb(var(--c-flow-income) / <alpha-value>)',
         'cat-social': 'rgb(var(--c-cat-social) / <alpha-value>)',
         'on-tertiary-container': 'rgb(var(--c-on-tertiary-container) / <alpha-value>)',
-        'border-hairline': 'rgba(var(--c-hairline), 0.10)'
+        /* 下划线/分隔线：1px 中性浅灰（不带色相，避免在粉色底上泛绿） */
+        'border-hairline': '#d5d5d5',
+        'hairline': '#d5d5d5'
       },
       borderRadius: {
         DEFAULT: '0.25rem',

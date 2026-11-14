@@ -94,10 +94,10 @@ app.post('/api/auth/register', async (req, res) => {
     );
     await conn.query(
       `INSERT INTO account (user_id, name, icon, initial_balance, sort_order) VALUES
-         (?, '微信',   '💬', 0, 1),
-         (?, '支付宝', '🅰️', 0, 2),
-         (?, '现金',   '💵', 0, 3),
-         (?, '银行卡', '💳', 0, 4)`,
+         (?, '微信',   'chat', 0, 1),
+         (?, '支付宝', 'payments', 0, 2),
+         (?, '现金',   'toll', 0, 3),
+         (?, '银行卡', 'credit_card', 0, 4)`,
       [id, id, id, id]
     );
     await conn.commit();
@@ -306,6 +306,24 @@ app.post('/api/user/data-reset', async (req, res) => {
   }
 });
 
+/* 删除资金账户（PRD 5.7 规则4）：其下流水自动转为「未分配」（account_id SET NULL） */
+app.delete('/api/account/:id', async (req, res) => {
+  const user = await currentUser(req);
+  if (!user) return res.status(401).json({ message: '未登录' });
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id)) return res.status(400).json({ message: '账户 ID 无效' });
+  try {
+    const [rows] = await pool.query('SELECT id FROM account WHERE id = ? AND user_id = ?', [id, user.id]);
+    if (!rows.length) return res.status(404).json({ message: '账户不存在' });
+    const [txnRows] = await pool.query('SELECT COUNT(*) AS c FROM transaction WHERE account_id = ?', [id]);
+    await pool.query('DELETE FROM account WHERE id = ? AND user_id = ?', [id, user.id]);
+    res.json({ ok: true, txnsUnassigned: txnRows[0].c });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: '服务器错误，请稍后再试' });
+  }
+});
+
 /* 首页全部卡片数据，一次请求返回（全部按当前登录用户计算） */
 app.get('/api/home/summary', async (req, res) => {
   const user = await currentUser(req);
@@ -392,6 +410,287 @@ app.get('/api/home/summary', async (req, res) => {
       today: { expense: todayTotal, count: todayRows[0].c, yesterday: +ydayRows[0].s, top2: top2Data },
       top3: { items: top3Items, combinedPct: combinedPct }
     });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: '服务器错误，请稍后再试' });
+  }
+});
+
+/* ---------- 明细页（PRD 5.3 列表 / 5.1 记账 / 5.5 导出） ---------- */
+
+/* 月份工具：'YYYY-MM' → 当月首日 / 次月首日 */
+function monthRange(mk) {
+  const [y, m] = mk.split('-').map(Number);
+  const start = new Date(y, m - 1, 1);
+  const end = new Date(y, m, 1);
+  const pad = (n) => String(n).padStart(2, '0');
+  return {
+    start: start.getFullYear() + '-' + pad(start.getMonth() + 1) + '-01',
+    end: end.getFullYear() + '-' + pad(end.getMonth() + 1) + '-01'
+  };
+}
+
+/* 表单元数据：分类树 / 资金账户 / 后端生成的当前日期与时刻 */
+app.get('/api/transaction/meta', async (req, res) => {
+  const user = await currentUser(req);
+  if (!user) return res.status(401).json({ message: '未登录' });
+  try {
+    const [cats] = await pool.query(
+      `SELECT id, name, type, parent_id, icon, color FROM category
+        WHERE is_active = 1 ORDER BY type, parent_id, sort_order`);
+    const [accts] = await pool.query(
+      'SELECT id, name, icon FROM account WHERE user_id = ? AND is_active = 1 ORDER BY sort_order', [user.id]);
+    const [now] = await pool.query("SELECT CURDATE() AS today, DATE_FORMAT(NOW(), '%H:%i') AS now");
+    res.json({
+      today: String(now[0].today),
+      now: now[0].now,
+      categories: cats,
+      accounts: accts
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: '服务器错误，请稍后再试' });
+  }
+});
+
+/* 可选月份：该用户有记账数据的月份（倒序）+ 当前月 */
+app.get('/api/transaction/months', async (req, res) => {
+  const user = await currentUser(req);
+  if (!user) return res.status(401).json({ message: '未登录' });
+  try {
+    const pad = (n) => String(n).padStart(2, '0');
+    const now = new Date();
+    const cur = now.getFullYear() + '-' + pad(now.getMonth() + 1);
+    const [rows] = await pool.query(
+      `SELECT DISTINCT DATE_FORMAT(date, '%Y-%m') AS mk
+         FROM transaction WHERE user_id = ? ORDER BY mk DESC`, [user.id]);
+    const list = rows.map(function (r) { return r.mk; });
+    if (list.indexOf(cur) === -1) list.unshift(cur);
+    res.json({ months: list, current: cur });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: '服务器错误，请稍后再试' });
+  }
+});
+
+/* 明细列表：按月 + 类型 + 分类 + 关键词（备注/商家/标签）查询，返回按天分组 */
+app.get('/api/transaction/list', async (req, res) => {
+  const user = await currentUser(req);
+  if (!user) return res.status(401).json({ message: '未登录' });
+  try {
+    const pad = (n) => String(n).padStart(2, '0');
+    const now = new Date();
+    const mk = /^\d{4}-\d{2}$/.test(req.query.month || '')
+      ? req.query.month
+      : now.getFullYear() + '-' + pad(now.getMonth() + 1);
+    const { start, end } = monthRange(mk);
+    const type = ['expense', 'income'].includes(req.query.type) ? req.query.type : 'all';
+    const cat = /^\d+$/.test(req.query.category || '') ? Number(req.query.category) : null;
+    const q = String(req.query.q || '').trim();
+
+    const where = ['t.user_id = ?', 't.date >= ?', 't.date < ?'];
+    const params = [user.id, start, end];
+    if (type !== 'all') { where.push('t.type = ?'); params.push(type); }
+    if (cat !== null) { where.push('t.category_id = ?'); params.push(cat); }
+    if (q) {
+      where.push('(t.note LIKE ? OR c.name LIKE ? OR sc.name LIKE ? OR a.name LIKE ?)');
+      const like = '%' + q + '%';
+      params.push(like, like, like, like);
+    }
+    const [rows] = await pool.query(
+      `SELECT t.id, t.type, t.amount, t.date, t.note, t.account_id,
+              DATE_FORMAT(t.created_at, '%H:%i') AS time,
+              t.created_at, t.updated_at,
+              c.id AS cat_id, c.name AS cat_name, c.icon AS cat_icon, c.color AS cat_color,
+              sc.id AS sub_id, sc.name AS sub_name,
+              a.name AS account_name
+         FROM transaction t
+         JOIN category c ON c.id = t.category_id
+         LEFT JOIN category sc ON sc.id = t.subcategory_id
+         LEFT JOIN account a ON a.id = t.account_id
+        WHERE ${where.join(' AND ')}
+        ORDER BY t.date DESC, t.created_at DESC, t.id DESC`, params);
+
+    let totalExpense = 0, totalIncome = 0;
+    const map = new Map();
+    rows.forEach(function (r) {
+      if (r.type === 'expense') totalExpense += Number(r.amount);
+      else totalIncome += Number(r.amount);
+      if (!map.has(r.date)) map.set(r.date, []);
+      map.get(r.date).push(r);
+    });
+    const groups = [...map.entries()].map(function (entry) {
+      const items = entry[1].map(function (r) {
+        return {
+          id: r.id, type: r.type, amount: Number(r.amount), date: r.date,
+          time: r.time, note: r.note || '', createdAt: r.created_at, updatedAt: r.updated_at,
+          categoryId: r.cat_id, categoryName: r.cat_name, categoryIcon: r.cat_icon,
+          categoryColor: r.cat_color, subCategoryId: r.sub_id, subCategoryName: r.sub_name,
+          accountId: r.account_id, accountName: r.account_name
+        };
+      });
+      return { date: entry[0], items: items };
+    });
+
+    res.json({
+      month: mk,
+      count: rows.length,
+      totalExpense: Math.round(totalExpense * 100) / 100,
+      totalIncome: Math.round(totalIncome * 100) / 100,
+      groups: groups
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: '服务器错误，请稍后再试' });
+  }
+});
+
+/* 新增记账：日期与时刻由后端生成（未传 date 时取今天） */
+app.post('/api/transaction', async (req, res) => {
+  const user = await currentUser(req);
+  if (!user) return res.status(401).json({ message: '未登录' });
+  const body = req.body || {};
+  const amount = Number(body.amount);
+  if (!(amount > 0) || amount > 99999999.99)
+    return res.status(400).json({ message: '金额需大于 0 且不超过 99,999,999.99' });
+  const categoryId = Number(body.categoryId);
+  if (!Number.isInteger(categoryId)) return res.status(400).json({ message: '请选择分类' });
+  const note = String(body.note || '').trim().slice(0, 50);
+  const accountId = body.accountId ? Number(body.accountId) : null;
+  const subId = body.subCategoryId ? Number(body.subCategoryId) : null;
+  try {
+    const [catRows] = await pool.query('SELECT id, type FROM category WHERE id = ?', [categoryId]);
+    if (!catRows.length) return res.status(400).json({ message: '分类不存在' });
+    const type = catRows[0].type;
+    /* 记账日期：后端生成（默认今天，允许补记过去 365 天内） */
+    let date = String(body.date || '');
+    const [todayRow] = await pool.query('SELECT CURDATE() AS d');
+    const today = String(todayRow[0].d);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) date = today;
+    if (date > today) return res.status(400).json({ message: '不能记录未来日期' });
+    const minDate = new Date(); minDate.setDate(minDate.getDate() - 365);
+    const pad = (n) => String(n).padStart(2, '0');
+    const min = minDate.getFullYear() + '-' + pad(minDate.getMonth() + 1) + '-' + pad(minDate.getDate());
+    if (date < min) return res.status(400).json({ message: '仅支持补记 365 天内的账' });
+
+    const [r] = await pool.query(
+      `INSERT INTO transaction (user_id, type, amount, category_id, subcategory_id, date, account_id, note)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [user.id, type, amount, categoryId, subId, date, accountId, note]);
+    const [rows] = await pool.query(
+      `SELECT t.id, t.type, t.amount, t.date, t.note, t.account_id,
+              DATE_FORMAT(t.created_at, '%H:%i') AS time, t.created_at, t.updated_at,
+              c.id AS cat_id, c.name AS cat_name, c.icon AS cat_icon, c.color AS cat_color,
+              sc.id AS sub_id, sc.name AS sub_name, a.name AS account_name
+         FROM transaction t
+         JOIN category c ON c.id = t.category_id
+         LEFT JOIN category sc ON sc.id = t.subcategory_id
+         LEFT JOIN account a ON a.id = t.account_id
+        WHERE t.id = ?`, [r.insertId]);
+    const row = rows[0];
+    res.status(201).json({
+      record: {
+        id: row.id, type: row.type, amount: Number(row.amount), date: row.date, time: row.time,
+        note: row.note || '', createdAt: row.created_at, updatedAt: row.updated_at,
+        categoryId: row.cat_id, categoryName: row.cat_name, categoryIcon: row.cat_icon,
+        categoryColor: row.cat_color, subCategoryId: row.sub_id, subCategoryName: row.sub_name,
+        accountId: row.account_id, accountName: row.account_name
+      }
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: '服务器错误，请稍后再试' });
+  }
+});
+
+/* 修改记账（日期与时刻由后端维护，不接受前端传入） */
+app.put('/api/transaction/:id', async (req, res) => {
+  const user = await currentUser(req);
+  if (!user) return res.status(401).json({ message: '未登录' });
+  const id = Number(req.params.id);
+  const body = req.body || {};
+  const amount = Number(body.amount);
+  if (!Number.isInteger(id)) return res.status(400).json({ message: '流水 ID 无效' });
+  if (!(amount > 0) || amount > 99999999.99)
+    return res.status(400).json({ message: '金额需大于 0 且不超过 99,999,999.99' });
+  const categoryId = Number(body.categoryId);
+  if (!Number.isInteger(categoryId)) return res.status(400).json({ message: '请选择分类' });
+  const note = String(body.note || '').trim().slice(0, 50);
+  const accountId = body.accountId ? Number(body.accountId) : null;
+  const subId = body.subCategoryId ? Number(body.subId || body.subCategoryId) : null;
+  try {
+    const [own] = await pool.query('SELECT id FROM transaction WHERE id = ? AND user_id = ?', [id, user.id]);
+    if (!own.length) return res.status(404).json({ message: '流水不存在' });
+    const [catRows] = await pool.query('SELECT id, type FROM category WHERE id = ?', [categoryId]);
+    if (!catRows.length) return res.status(400).json({ message: '分类不存在' });
+    await pool.query(
+      `UPDATE transaction
+          SET type = ?, amount = ?, category_id = ?, subcategory_id = ?, account_id = ?, note = ?
+        WHERE id = ? AND user_id = ?`,
+      [catRows[0].type, amount, categoryId, subId, accountId, note, id, user.id]);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: '服务器错误，请稍后再试' });
+  }
+});
+
+/* 删除记账 */
+app.delete('/api/transaction/:id', async (req, res) => {
+  const user = await currentUser(req);
+  if (!user) return res.status(401).json({ message: '未登录' });
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id)) return res.status(400).json({ message: '流水 ID 无效' });
+  try {
+    const [r] = await pool.query('DELETE FROM transaction WHERE id = ? AND user_id = ?', [id, user.id]);
+    if (!r.affectedRows) return res.status(404).json({ message: '流水不存在' });
+    res.json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: '服务器错误，请稍后再试' });
+  }
+});
+
+/* 导出所选月份的明细 CSV（PRD 5.5：UTF-8 BOM + 9 个固定字段） */
+app.get('/api/transaction/export', async (req, res) => {
+  const user = await currentUser(req);
+  if (!user) return res.status(401).json({ message: '未登录' });
+  try {
+    const pad = (n) => String(n).padStart(2, '0');
+    const now = new Date();
+    const mk = /^\d{4}-\d{2}$/.test(req.query.month || '')
+      ? req.query.month
+      : now.getFullYear() + '-' + pad(now.getMonth() + 1);
+    const { start, end } = monthRange(mk);
+    const [rows] = await pool.query(
+      `SELECT t.id, t.type, t.amount, t.date, t.note, t.created_at,
+              c.name AS cat_name, sc.name AS sub_name, a.name AS account_name
+         FROM transaction t
+         JOIN category c ON c.id = t.category_id
+         LEFT JOIN category sc ON sc.id = t.subcategory_id
+         LEFT JOIN account a ON a.id = t.account_id
+        WHERE t.user_id = ? AND t.date >= ? AND t.date < ?
+        ORDER BY t.id DESC`, [user.id, start, end]);   /* 默认按 id 从高到低（最新在前） */
+
+    const cell = (v) => {
+      const s = String(v == null ? '' : v);
+      return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+    };
+    const header = ['交易ID', '类型', '金额', '一级分类', '二级分类', '日期', '账户', '备注', '创建时间'];
+    const lines = [header.join(',')];
+    rows.forEach(function (r) {
+      lines.push([
+        r.id, r.type === 'expense' ? '支出' : '收入', Number(r.amount).toFixed(2),
+        r.cat_name, r.sub_name || '', r.date, r.account_name || '未分配', r.note || '', r.created_at
+      ].map(cell).join(','));
+    });
+    const csv = '﻿' + lines.join('\r\n');
+    const d = new Date();
+    const ts = d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '-' +
+      pad(d.getHours()) + pad(d.getMinutes()) + pad(d.getSeconds());
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="jianji-${mk}-${ts}.csv"`);
+    res.send(csv);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: '服务器错误，请稍后再试' });

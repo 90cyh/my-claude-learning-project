@@ -25,25 +25,29 @@
         <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-space-md">
           <!-- Left: Month picker & Quick Navigation -->
           <div class="flex items-center gap-space-sm flex-wrap sm:flex-nowrap">
+            <div class="relative">
             <div class="flex items-center bg-surface-container-low px-space-sm py-space-xs rounded-full">
-              <button aria-label="上一月" class="w-7 h-7 rounded-full flex items-center justify-center text-text-secondary hover:bg-surface-hero hover:text-primary transition-colors" type="button">
+              <button aria-label="上一月" class="w-7 h-7 rounded-full flex items-center justify-center text-text-secondary hover:bg-surface-hero hover:text-primary transition-colors" id="month-prev" type="button">
                 <span class="material-symbols-outlined text-[18px]">chevron_left</span>
               </button>
-              <div class="flex items-center gap-space-xs px-space-xs cursor-pointer group">
+              <div class="flex items-center gap-space-xs px-space-xs cursor-pointer group" id="month-toggle">
                 <span class="material-symbols-outlined text-primary text-[18px]">calendar_today</span>
-                <span class="font-headline-md text-headline-md text-text-primary tracking-tight">2026年 11月</span>
+                <span class="font-headline-md text-headline-md text-text-primary tracking-tight" id="month-label">2026年 11月</span>
                 <span class="material-symbols-outlined text-text-muted text-[16px] group-hover:translate-y-0.5 transition-transform">expand_more</span>
               </div>
-              <button aria-label="下一月" class="w-7 h-7 rounded-full flex items-center justify-center text-text-secondary hover:bg-surface-hero hover:text-primary transition-colors" type="button">
+              <button aria-label="下一月" class="w-7 h-7 rounded-full flex items-center justify-center text-text-secondary hover:bg-surface-hero hover:text-primary transition-colors" id="month-next" type="button">
                 <span class="material-symbols-outlined text-[18px]">chevron_right</span>
               </button>
             </div>
+            <!-- 月份下拉（复用头像菜单的下拉样式） -->
+            <div class="hidden absolute left-0 top-12 w-44 max-h-80 overflow-y-auto bg-surface border border-border-hairline rounded-[14px] shadow-[0_12px_32px_-4px_rgba(61,34,48,0.12)] py-space-xs z-50" id="month-menu"></div>
+            </div>
             <div class="hidden sm:flex items-center gap-space-xs text-text-muted font-caption text-caption px-space-xs">
-              <span>共 <strong class="text-text-primary font-label-md text-label-md">64</strong> 笔明细</span>
+              <span>共 <strong class="text-text-primary font-label-md text-label-md" id="stat-count">0</strong> 笔明细</span>
               <span>·</span>
-              <span class="text-flow-expense font-label-sm text-label-sm">支 ¥4,820.50</span>
+              <span class="text-flow-expense font-label-sm text-label-sm">支 ¥<span id="stat-expense">0.00</span></span>
               <span>·</span>
-              <span class="text-flow-income font-label-sm text-label-sm">收 ¥12,600.00</span>
+              <span class="text-flow-income font-label-sm text-label-sm">收 ¥<span id="stat-income">0.00</span></span>
             </div>
           </div>
           <!-- Right: Actions Group -->
@@ -61,22 +65,22 @@
         <!-- Filters & Search Line -->
         <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-space-sm">
           <div class="flex items-center gap-space-xs overflow-x-auto pb-1 md:pb-0 -mx-space-xs px-space-xs">
-            <button class="filter-chip active flex-shrink-0 h-8 px-space-md rounded-full bg-primary text-on-primary font-label-sm text-label-sm transition-colors flex items-center gap-space-2xs" type="button">
+            <button class="filter-chip active flex-shrink-0 h-8 px-space-md rounded-full bg-primary text-on-primary font-label-sm text-label-sm transition-colors flex items-center gap-space-2xs" data-filter="all" type="button">
               <span>全部类型</span>
             </button>
-            <button class="filter-chip flex-shrink-0 h-8 px-space-md rounded-full bg-surface-container-low text-text-secondary hover:bg-surface-hero hover:text-primary font-label-sm text-label-sm transition-colors flex items-center gap-space-2xs" type="button">
+            <button class="filter-chip flex-shrink-0 h-8 px-space-md rounded-full bg-surface-container-low text-text-secondary hover:bg-surface-hero hover:text-primary font-label-sm text-label-sm transition-colors flex items-center gap-space-2xs" data-filter="expense" type="button">
               <span class="w-1.5 h-1.5 rounded-full bg-flow-expense"></span>
               <span>支出</span>
             </button>
-            <button class="filter-chip flex-shrink-0 h-8 px-space-md rounded-full bg-surface-container-low text-text-secondary hover:bg-surface-hero hover:text-primary font-label-sm text-label-sm transition-colors flex items-center gap-space-2xs" type="button">
+            <button class="filter-chip flex-shrink-0 h-8 px-space-md rounded-full bg-surface-container-low text-text-secondary hover:bg-surface-hero hover:text-primary font-label-sm text-label-sm transition-colors flex items-center gap-space-2xs" data-filter="income" type="button">
               <span class="w-1.5 h-1.5 rounded-full bg-flow-income"></span>
               <span>收入</span>
             </button>
             <div class="w-px h-4 bg-outline-variant/30 mx-space-2xs flex-shrink-0"></div>
-            <button class="filter-chip flex-shrink-0 h-8 px-space-md rounded-full bg-surface-container-low text-text-secondary hover:bg-surface-hero hover:text-primary font-label-sm text-label-sm transition-colors" type="button">餐饮外卖</button>
-            <button class="filter-chip flex-shrink-0 h-8 px-space-md rounded-full bg-surface-container-low text-text-secondary hover:bg-surface-hero hover:text-primary font-label-sm text-label-sm transition-colors" type="button">日用数码</button>
-            <button class="filter-chip flex-shrink-0 h-8 px-space-md rounded-full bg-surface-container-low text-text-secondary hover:bg-surface-hero hover:text-primary font-label-sm text-label-sm transition-colors" type="button">交通出行</button>
-            <button class="filter-chip flex-shrink-0 h-8 px-space-md rounded-full bg-surface-container-low text-text-secondary hover:bg-surface-hero hover:text-primary font-label-sm text-label-sm transition-colors" type="button">文娱活动</button>
+            <button class="filter-chip flex-shrink-0 h-8 px-space-md rounded-full bg-surface-container-low text-text-secondary hover:bg-surface-hero hover:text-primary font-label-sm text-label-sm transition-colors" data-cat="餐饮" type="button">餐饮外卖</button>
+            <button class="filter-chip flex-shrink-0 h-8 px-space-md rounded-full bg-surface-container-low text-text-secondary hover:bg-surface-hero hover:text-primary font-label-sm text-label-sm transition-colors" data-cat="购物" type="button">日用数码</button>
+            <button class="filter-chip flex-shrink-0 h-8 px-space-md rounded-full bg-surface-container-low text-text-secondary hover:bg-surface-hero hover:text-primary font-label-sm text-label-sm transition-colors" data-cat="交通" type="button">交通出行</button>
+            <button class="filter-chip flex-shrink-0 h-8 px-space-md rounded-full bg-surface-container-low text-text-secondary hover:bg-surface-hero hover:text-primary font-label-sm text-label-sm transition-colors" data-cat="娱乐" type="button">文娱活动</button>
           </div>
           <!-- Search Bar -->
           <div class="relative w-full md:w-72 flex-shrink-0">
@@ -89,257 +93,8 @@
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
         <!-- Left Column (8 cols): Transaction Timeline & Records -->
         <section class="lg:col-span-8 flex flex-col gap-space-lg">
-          <!-- Group 1: 11月5日 今天 -->
-          <div class="bg-surface rounded-xl p-space-md shadow-sm flex flex-col gap-space-sm">
-            <div class="flex items-center justify-between px-space-xs pb-space-xs">
-              <div class="flex items-center gap-space-sm">
-                <span class="w-2 h-2 rounded-full bg-primary"></span>
-                <span class="font-headline-md text-headline-md text-text-primary">11月05日</span>
-                <span class="font-label-sm text-label-sm px-space-xs py-space-2xs rounded bg-surface-hero text-primary">今天</span>
-                <span class="font-caption text-caption text-text-muted">星期四</span>
-              </div>
-              <div class="font-label-sm text-label-sm text-text-secondary">
-                当日小计: <span class="text-flow-expense font-label-md text-label-md ml-1">-¥86.00</span>
-              </div>
-            </div>
-            <div class="flex flex-col gap-space-2xs">
-              <!-- Item 1 (Selected State Demo) -->
-              <div class="tx-item active-row group flex items-center justify-between p-space-sm rounded-lg bg-surface-hero cursor-pointer transition-all" data-account="微信零钱" data-amount="-28.00" data-category="cat-dining" data-category-name="餐饮消费" data-date="2026-11-05" data-remark="星巴克日落大道烘焙工坊" data-time="14:25" data-title="精品手冲咖啡" data-tx-id="tx-101">
-                <div class="flex items-center gap-space-md min-w-0">
-                  <div class="w-9 h-9 rounded-lg bg-cat-dining/15 text-cat-dining flex items-center justify-center flex-shrink-0">
-                    <span class="material-symbols-outlined text-[20px]">local_cafe</span>
-                  </div>
-                  <div class="flex flex-col min-w-0">
-                    <div class="flex items-center gap-space-xs">
-                      <span class="font-label-md text-label-md text-text-primary truncate">精品手冲咖啡</span>
-                      <span class="font-caption text-caption px-space-xs py-space-2xs rounded bg-surface-container text-cat-dining">特调下午茶</span>
-                    </div>
-                    <div class="flex items-center gap-space-xs font-caption text-caption text-text-muted mt-space-2xs">
-                      <span>14:25</span><span>·</span><span>微信零钱</span><span>·</span>
-                      <span class="truncate max-w-[160px] sm:max-w-xs">星巴克日落大道烘焙工坊</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="flex items-center gap-space-md flex-shrink-0 pl-space-sm">
-                  <span class="font-headline-md text-headline-md text-flow-expense tracking-tight">-¥28.00</span>
-                  <div class="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-opacity">
-                    <button class="w-7 h-7 rounded-full flex items-center justify-center text-text-muted hover:text-primary hover:bg-surface transition-colors" title="快速修改" type="button">
-                      <span class="material-symbols-outlined text-[16px]">edit</span>
-                    </button>
-                    <button class="w-7 h-7 rounded-full flex items-center justify-center text-text-muted hover:text-status-danger hover:bg-surface transition-colors" title="删除" type="button">
-                      <span class="material-symbols-outlined text-[16px]">delete</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <!-- Item 2 -->
-              <div class="tx-item group flex items-center justify-between p-space-sm rounded-lg hover:bg-surface-container-low cursor-pointer transition-all" data-account="交通联合卡" data-amount="-6.00" data-category="cat-transport" data-category-name="交通出行" data-date="2026-11-05" data-remark="7号线科技园站" data-time="08:42" data-title="地铁通勤打卡" data-tx-id="tx-102">
-                <div class="flex items-center gap-space-md min-w-0">
-                  <div class="w-9 h-9 rounded-lg bg-cat-transport/15 text-cat-transport flex items-center justify-center flex-shrink-0">
-                    <span class="material-symbols-outlined text-[20px]">subway</span>
-                  </div>
-                  <div class="flex flex-col min-w-0">
-                    <div class="flex items-center gap-space-xs">
-                      <span class="font-label-md text-label-md text-text-primary truncate">地铁通勤打卡</span>
-                      <span class="font-caption text-caption px-space-xs py-space-2xs rounded bg-surface-container text-cat-transport">公共出行</span>
-                    </div>
-                    <div class="flex items-center gap-space-xs font-caption text-caption text-text-muted mt-space-2xs">
-                      <span>08:42</span><span>·</span><span>交通联合卡</span><span>·</span>
-                      <span class="truncate max-w-[160px] sm:max-w-xs">7号线科技园站</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="flex items-center gap-space-md flex-shrink-0 pl-space-sm">
-                  <span class="font-headline-md text-headline-md text-flow-expense tracking-tight">-¥6.00</span>
-                  <div class="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-opacity">
-                    <button class="w-7 h-7 rounded-full flex items-center justify-center text-text-muted hover:text-primary hover:bg-surface transition-colors" title="快速修改" type="button">
-                      <span class="material-symbols-outlined text-[16px]">edit</span>
-                    </button>
-                    <button class="w-7 h-7 rounded-full flex items-center justify-center text-text-muted hover:text-status-danger hover:bg-surface transition-colors" title="删除" type="button">
-                      <span class="material-symbols-outlined text-[16px]">delete</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <!-- Item 3 -->
-              <div class="tx-item group flex items-center justify-between p-space-sm rounded-lg hover:bg-surface-container-low cursor-pointer transition-all" data-account="招商信用卡" data-amount="-52.00" data-category="cat-dining" data-category-name="餐饮消费" data-date="2026-11-05" data-remark="和府捞面园区店" data-time="12:15" data-title="商务午餐套餐" data-tx-id="tx-103">
-                <div class="flex items-center gap-space-md min-w-0">
-                  <div class="w-9 h-9 rounded-lg bg-cat-dining/15 text-cat-dining flex items-center justify-center flex-shrink-0">
-                    <span class="material-symbols-outlined text-[20px]">ramen_dining</span>
-                  </div>
-                  <div class="flex flex-col min-w-0">
-                    <div class="flex items-center gap-space-xs">
-                      <span class="font-label-md text-label-md text-text-primary truncate">商务午餐套餐</span>
-                      <span class="font-caption text-caption px-space-xs py-space-2xs rounded bg-surface-container text-cat-dining">日常正餐</span>
-                    </div>
-                    <div class="flex items-center gap-space-xs font-caption text-caption text-text-muted mt-space-2xs">
-                      <span>12:15</span><span>·</span><span>招商信用卡</span><span>·</span>
-                      <span class="truncate max-w-[160px] sm:max-w-xs">和府捞面园区店</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="flex items-center gap-space-md flex-shrink-0 pl-space-sm">
-                  <span class="font-headline-md text-headline-md text-flow-expense tracking-tight">-¥52.00</span>
-                  <div class="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-opacity">
-                    <button class="w-7 h-7 rounded-full flex items-center justify-center text-text-muted hover:text-primary hover:bg-surface transition-colors" title="快速修改" type="button">
-                      <span class="material-symbols-outlined text-[16px]">edit</span>
-                    </button>
-                    <button class="w-7 h-7 rounded-full flex items-center justify-center text-text-muted hover:text-status-danger hover:bg-surface transition-colors" title="删除" type="button">
-                      <span class="material-symbols-outlined text-[16px]">delete</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Group 2: 11月4日 昨天 -->
-          <div class="bg-surface rounded-xl p-space-md shadow-sm flex flex-col gap-space-sm">
-            <div class="flex items-center justify-between px-space-xs pb-space-xs">
-              <div class="flex items-center gap-space-sm">
-                <span class="w-2 h-2 rounded-full bg-text-muted"></span>
-                <span class="font-headline-md text-headline-md text-text-primary">11月04日</span>
-                <span class="font-label-sm text-label-sm px-space-xs py-space-2xs rounded bg-surface-container-low text-text-secondary">昨天</span>
-                <span class="font-caption text-caption text-text-muted">星期三</span>
-              </div>
-              <div class="font-label-sm text-label-sm text-text-secondary">
-                当日小计: <span class="text-flow-expense font-label-md text-label-md ml-1">-¥152.00</span>
-              </div>
-            </div>
-            <div class="flex flex-col gap-space-2xs">
-              <!-- Item 4 -->
-              <div class="tx-item group flex items-center justify-between p-space-sm rounded-lg hover:bg-surface-container-low cursor-pointer transition-all" data-account="支付宝余额" data-amount="-116.00" data-category="cat-shopping" data-category-name="生活日用" data-date="2026-11-04" data-remark="山姆会员超市" data-time="19:30" data-title="生活超市果蔬" data-tx-id="tx-104">
-                <div class="flex items-center gap-space-md min-w-0">
-                  <div class="w-9 h-9 rounded-lg bg-cat-shopping/15 text-cat-shopping flex items-center justify-center flex-shrink-0">
-                    <span class="material-symbols-outlined text-[20px]">shopping_basket</span>
-                  </div>
-                  <div class="flex flex-col min-w-0">
-                    <div class="flex items-center gap-space-xs">
-                      <span class="font-label-md text-label-md text-text-primary truncate">生活超市果蔬采购</span>
-                      <span class="font-caption text-caption px-space-xs py-space-2xs rounded bg-surface-container text-cat-shopping">日杂补给</span>
-                    </div>
-                    <div class="flex items-center gap-space-xs font-caption text-caption text-text-muted mt-space-2xs">
-                      <span>19:30</span><span>·</span><span>支付宝余额</span><span>·</span>
-                      <span class="truncate max-w-[160px] sm:max-w-xs">山姆会员超市</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="flex items-center gap-space-md flex-shrink-0 pl-space-sm">
-                  <span class="font-headline-md text-headline-md text-flow-expense tracking-tight">-¥116.00</span>
-                  <div class="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-opacity">
-                    <button class="w-7 h-7 rounded-full flex items-center justify-center text-text-muted hover:text-primary hover:bg-surface transition-colors" title="快速修改" type="button">
-                      <span class="material-symbols-outlined text-[16px]">edit</span>
-                    </button>
-                    <button class="w-7 h-7 rounded-full flex items-center justify-center text-text-muted hover:text-status-danger hover:bg-surface transition-colors" title="删除" type="button">
-                      <span class="material-symbols-outlined text-[16px]">delete</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <!-- Item 5 -->
-              <div class="tx-item group flex items-center justify-between p-space-sm rounded-lg hover:bg-surface-container-low cursor-pointer transition-all" data-account="Apple Pay" data-amount="-36.00" data-category="cat-entertainment" data-category-name="文娱休闲" data-date="2026-11-04" data-remark="iCloud+ &amp; 音乐包月订阅" data-time="09:12" data-title="网络流媒体会员" data-tx-id="tx-105">
-                <div class="flex items-center gap-space-md min-w-0">
-                  <div class="w-9 h-9 rounded-lg bg-cat-entertainment/15 text-cat-entertainment flex items-center justify-center flex-shrink-0">
-                    <span class="material-symbols-outlined text-[20px]">subscriptions</span>
-                  </div>
-                  <div class="flex flex-col min-w-0">
-                    <div class="flex items-center gap-space-xs">
-                      <span class="font-label-md text-label-md text-text-primary truncate">数字订阅扣费</span>
-                      <span class="font-caption text-caption px-space-xs py-space-2xs rounded bg-surface-container text-cat-entertainment">会员月结</span>
-                    </div>
-                    <div class="flex items-center gap-space-xs font-caption text-caption text-text-muted mt-space-2xs">
-                      <span>09:12</span><span>·</span><span>Apple Pay</span><span>·</span>
-                      <span class="truncate max-w-[160px] sm:max-w-xs">iCloud+ &amp; 音乐包月订阅</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="flex items-center gap-space-md flex-shrink-0 pl-space-sm">
-                  <span class="font-headline-md text-headline-md text-flow-expense tracking-tight">-¥36.00</span>
-                  <div class="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-opacity">
-                    <button class="w-7 h-7 rounded-full flex items-center justify-center text-text-muted hover:text-primary hover:bg-surface transition-colors" title="快速修改" type="button">
-                      <span class="material-symbols-outlined text-[16px]">edit</span>
-                    </button>
-                    <button class="w-7 h-7 rounded-full flex items-center justify-center text-text-muted hover:text-status-danger hover:bg-surface transition-colors" title="删除" type="button">
-                      <span class="material-symbols-outlined text-[16px]">delete</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Group 3: 11月3日 (含收入项) -->
-          <div class="bg-surface rounded-xl p-space-md shadow-sm flex flex-col gap-space-sm">
-            <div class="flex items-center justify-between px-space-xs pb-space-xs">
-              <div class="flex items-center gap-space-sm">
-                <span class="w-2 h-2 rounded-full bg-text-muted"></span>
-                <span class="font-headline-md text-headline-md text-text-primary">11月03日</span>
-                <span class="font-caption text-caption text-text-muted">星期二</span>
-              </div>
-              <div class="font-label-sm text-label-sm text-text-secondary">
-                支出: <span class="text-flow-expense font-label-md text-label-md mr-2">-¥320.00</span>
-                收入: <span class="text-flow-income font-label-md text-label-md">+¥1,200.00</span>
-              </div>
-            </div>
-            <div class="flex flex-col gap-space-2xs">
-              <!-- Item 6: Income -->
-              <div class="tx-item group flex items-center justify-between p-space-sm rounded-lg hover:bg-surface-container-low cursor-pointer transition-all" data-account="招商储蓄卡" data-amount="+1200.00" data-category="flow-income" data-category-name="兼职副业" data-date="2026-11-03" data-remark="PWA界面微交互咨询交付" data-time="18:00" data-title="设计咨询兼职尾款" data-tx-id="tx-106">
-                <div class="flex items-center gap-space-md min-w-0">
-                  <div class="w-9 h-9 rounded-lg bg-flow-income/15 text-flow-income flex items-center justify-center flex-shrink-0">
-                    <span class="material-symbols-outlined text-[20px]">payments</span>
-                  </div>
-                  <div class="flex flex-col min-w-0">
-                    <div class="flex items-center gap-space-xs">
-                      <span class="font-label-md text-label-md text-text-primary truncate">设计咨询兼职尾款</span>
-                      <span class="font-caption text-caption px-space-xs py-space-2xs rounded bg-surface-container text-flow-income">主动收入</span>
-                    </div>
-                    <div class="flex items-center gap-space-xs font-caption text-caption text-text-muted mt-space-2xs">
-                      <span>18:00</span><span>·</span><span>招商储蓄卡</span><span>·</span>
-                      <span class="truncate max-w-[160px] sm:max-w-xs">PWA界面微交互咨询交付</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="flex items-center gap-space-md flex-shrink-0 pl-space-sm">
-                  <span class="font-headline-md text-headline-md text-flow-income tracking-tight">+¥1,200.00</span>
-                  <div class="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-opacity">
-                    <button class="w-7 h-7 rounded-full flex items-center justify-center text-text-muted hover:text-primary hover:bg-surface transition-colors" title="快速修改" type="button">
-                      <span class="material-symbols-outlined text-[16px]">edit</span>
-                    </button>
-                    <button class="w-7 h-7 rounded-full flex items-center justify-center text-text-muted hover:text-status-danger hover:bg-surface transition-colors" title="删除" type="button">
-                      <span class="material-symbols-outlined text-[16px]">delete</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <!-- Item 7 -->
-              <div class="tx-item group flex items-center justify-between p-space-sm rounded-lg hover:bg-surface-container-low cursor-pointer transition-all" data-account="支付宝余额" data-amount="-320.00" data-category="cat-medical" data-category-name="健康护理" data-date="2026-11-03" data-remark="丝芙兰专柜补水保湿霜" data-time="15:40" data-title="冬季护肤品补充" data-tx-id="tx-107">
-                <div class="flex items-center gap-space-md min-w-0">
-                  <div class="w-9 h-9 rounded-lg bg-cat-medical/15 text-cat-medical flex items-center justify-center flex-shrink-0">
-                    <span class="material-symbols-outlined text-[20px]">spa</span>
-                  </div>
-                  <div class="flex flex-col min-w-0">
-                    <div class="flex items-center gap-space-xs">
-                      <span class="font-label-md text-label-md text-text-primary truncate">冬季护理补给</span>
-                      <span class="font-caption text-caption px-space-xs py-space-2xs rounded bg-surface-container text-cat-medical">个护养生</span>
-                    </div>
-                    <div class="flex items-center gap-space-xs font-caption text-caption text-text-muted mt-space-2xs">
-                      <span>15:40</span><span>·</span><span>支付宝余额</span><span>·</span>
-                      <span class="truncate max-w-[160px] sm:max-w-xs">丝芙兰专柜补水保湿霜</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="flex items-center gap-space-md flex-shrink-0 pl-space-sm">
-                  <span class="font-headline-md text-headline-md text-flow-expense tracking-tight">-¥320.00</span>
-                  <div class="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-opacity">
-                    <button class="w-7 h-7 rounded-full flex items-center justify-center text-text-muted hover:text-primary hover:bg-surface transition-colors" title="快速修改" type="button">
-                      <span class="material-symbols-outlined text-[16px]">edit</span>
-                    </button>
-                    <button class="w-7 h-7 rounded-full flex items-center justify-center text-text-muted hover:text-status-danger hover:bg-surface transition-colors" title="删除" type="button">
-                      <span class="material-symbols-outlined text-[16px]">delete</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <!-- 流水列表：由 assets/js/pages/transactions.js 按数据库实时渲染（按天分组） -->
+          <div id="txn-groups" class="flex flex-col gap-space-lg"></div>
         </section>
         <!-- Right Column (4 cols): Sticky Quick Edit Panel (Desktop) -->
         <aside class="hidden lg:flex lg:col-span-4 flex-col gap-space-lg sticky top-20" id="sideEditorContainer">
@@ -388,11 +143,11 @@
               <div class="grid grid-cols-2 gap-space-sm">
                 <div class="flex flex-col gap-space-2xs">
                   <label class="font-caption text-caption text-text-secondary">记账日期</label>
-                  <input class="h-10 px-space-sm rounded-lg bg-surface-container-low text-text-primary font-body-sm text-body-sm outline-none cursor-pointer" id="editDateInput" type="date" value="2026-11-05">
+                  <input class="h-10 px-space-sm rounded-lg bg-surface-container-low text-text-primary font-body-sm text-body-sm outline-none cursor-pointer" id="editDateInput" title="默认由后台系统填入今天，可修改以补记过去 365 天内的账" type="date" value="2026-11-05">
                 </div>
                 <div class="flex flex-col gap-space-2xs">
                   <label class="font-caption text-caption text-text-secondary">发生时刻</label>
-                  <input class="h-10 px-space-sm rounded-lg bg-surface-container-low text-text-primary font-body-sm text-body-sm outline-none cursor-pointer" id="editTimeInput" type="time" value="14:25">
+                  <input class="h-10 px-space-sm rounded-lg bg-surface-container-low text-text-primary font-body-sm text-body-sm outline-none cursor-pointer" id="editTimeInput" readonly title="由后台系统自动记录，不可手动修改" type="time" value="14:25">
                 </div>
               </div>
               <div class="flex flex-col gap-space-2xs">
@@ -410,32 +165,7 @@
               </button>
             </div>
           </div>
-          <!-- Month Budget Mini Status Card -->
-          <div class="bg-surface rounded-xl p-space-md shadow-sm flex flex-col gap-space-md">
-            <div class="flex items-center justify-between">
-              <span class="font-label-md text-label-md text-text-primary">11月总预算执行</span>
-              <span class="font-caption text-caption text-status-safe font-semibold">健康 (68%)</span>
-            </div>
-            <div class="flex flex-col gap-space-xs">
-              <div class="flex justify-between font-caption text-caption text-text-muted">
-                <span>已支 ¥4,820.50</span>
-                <span>预算限额 ¥7,000.00</span>
-              </div>
-              <div class="w-full h-1.5 rounded-full bg-track-unfilled overflow-hidden">
-                <div class="h-full bg-status-caution rounded-full transition-all duration-500" style="width: 68%;"></div>
-              </div>
-            </div>
-            <div class="grid grid-cols-2 gap-space-sm pt-space-xs text-center">
-              <div class="bg-surface-container-low p-space-sm rounded-lg">
-                <span class="font-caption text-caption text-text-muted block">剩余可用额度</span>
-                <span class="font-headline-md text-headline-md text-text-primary block mt-1">¥2,179.50</span>
-              </div>
-              <div class="bg-surface-container-low p-space-sm rounded-lg">
-                <span class="font-caption text-caption text-text-muted block">日均建议支出</span>
-                <span class="font-headline-md text-headline-md text-status-safe block mt-1">¥83.80</span>
-              </div>
-            </div>
-          </div>
+          <!-- Month Budget Mini Status Card 已按需求移除（PRD：预算属 V1.1，且首页已有总预算展示） -->
         </aside>
       </div>
     </div>
