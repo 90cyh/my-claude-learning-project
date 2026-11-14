@@ -242,9 +242,10 @@
 
     chart.innerHTML =
       '<div class="w-full h-56 flex flex-col justify-end relative">' +
-        '<div class="absolute left-0 right-0 z-10 flex items-center pointer-events-none" style="top:' + meanTop.toFixed(1) + '%">' +
+        /* 均值基准线：标签绝对定位在右端内侧（z-30 高于柱子，避免被遮挡或溢出） */
+        '<div class="absolute left-0 right-0 z-30 flex items-center pointer-events-none" style="top:' + meanTop.toFixed(1) + '%">' +
           '<div class="w-full border-t border-dashed border-primary/40"></div>' +
-          '<span class="shrink-0 ml-space-xs bg-surface-hero px-space-xs py-space-2xs rounded text-primary font-caption text-caption font-semibold">均值 ¥' + fmtShort(mean) + '</span>' +
+          '<span class="absolute right-0 top-1/2 -translate-y-1/2 bg-surface-hero px-space-xs py-space-2xs rounded text-primary font-caption text-caption font-semibold whitespace-nowrap">均值 ¥' + fmtShort(mean) + '</span>' +
         '</div>' +
         '<div class="' + gridCls + '">' + bars + '</div>' +
       '</div>';
