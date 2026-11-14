@@ -134,9 +134,16 @@
         list.innerHTML = '<div class="py-space-md text-center font-caption text-caption text-text-muted">本月还没有支出记录，去明细页记一笔吧 🌸</div>';
       } else {
         list.innerHTML = d.recent.map(function (t) {
+          /* 图标与明细页保持一致：Material Symbols 线性图标 + 分类色淡染底 */
+          var cs = {
+            sym: window.JIANCAT.sym(t.categoryName),
+            cls: window.JIANCAT.cls(t.categoryName)
+          };
           return '<div class="h-12 flex items-center justify-between py-space-xs hover:bg-surface-container-low rounded-[8px] px-space-xs transition-colors">' +
             '<div class="flex items-center gap-space-sm min-w-0">' +
-              '<div class="w-7 h-7 rounded-[8px] bg-surface-hero flex items-center justify-center text-[14px] shrink-0">' + esc(t.icon) + '</div>' +
+              '<div class="w-9 h-9 rounded-lg ' + cs.cls + ' flex items-center justify-center flex-shrink-0">' +
+                '<span class="material-symbols-outlined text-[20px]">' + cs.sym + '</span>' +
+              '</div>' +
               '<div class="flex flex-col min-w-0">' +
                 '<span class="font-body-md text-body-md text-text-primary font-medium truncate">' + esc(t.title) + '</span>' +
                 '<span class="font-caption text-caption text-text-muted">' + esc(dateLabel(t.date)) + ' · ' + esc(t.categoryName) + '</span>' +
