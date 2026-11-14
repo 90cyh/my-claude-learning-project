@@ -50,7 +50,11 @@ window.JIANJIRECORD = (function () {
           '<label class="field" style="flex:1">备注（选填，50 字内）<input id="record-note" maxlength="50" placeholder="例如：和府捞面园区店"></label>' +
         '</div>' +
         '<div class="sheet-actions">' +
-          '<button class="btn-primary" id="record-save" type="button">保存 🌸</button>' +
+          /* 与明细页「保存更新」按钮同款样式（bg-primary / hover:bg-secondary / text-on-primary） */
+          '<button class="w-full h-11 rounded-full bg-primary hover:bg-secondary text-on-primary font-headline-md text-label-md flex items-center justify-center gap-space-xs transition-colors active:scale-[0.97] disabled:opacity-60 disabled:pointer-events-none" id="record-save" type="button">' +
+            '<span class="material-symbols-outlined text-[18px]">check</span>' +
+            '<span>保存</span>' +
+          '</button>' +
         '</div>' +
       '</div>';
     document.body.appendChild(wrap);
